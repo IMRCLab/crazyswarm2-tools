@@ -1,3 +1,7 @@
+# Crazyswarm2 Tools
+
+This repository is based on the branch ```tune-lee``` from [Crazyswarm2](https://github.com/IMRCLab/crazyswarm2/tree/tune-lee). It contains all the data that was accumulated during the tuning experiments of the Lee controller. The data is stored in the folder ```_logs```. In here, you will a script for yaml-based automatic report generation to process the logs. The sciprt ````model.py`` focuses on manipulating and adding data to the automatically generated reports. In the following, you will find a guide on how to use the scripts and data.
+
 # I just want to plot the data of an experiment. What should I do?
 
 1. Check if you have the folder ```_experiments/reports```. If not, create it.

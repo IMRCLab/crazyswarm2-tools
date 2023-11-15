@@ -1,0 +1,24 @@
+experiment: 151
+trajectory: translation_y.csv
+timescale: 0.75
+motors: standard motors (CF)
+propellers: standard propellers (CF)
+Kpos_Px: 17.0
+Kpos_Py: 17.0
+Kpos_Pz: 17.0
+Kpos_Ix: 0.0
+Kpos_Iy: 0.0
+Kpos_Iz: 10.0
+Kpos_Dx: 7.0
+Kpos_Dy: 7.0
+Kpos_Dz: 7.0
+KR_x: 0.009
+KR_y: 0.009
+KR_z: 0.009
+KI_x: 0.04
+KI_y: 0.04
+KI_z: 0.04
+Kw_x: 0.001375
+Kw_y: 0.001375
+Kw_z: 0.00275
+mass: 0.033

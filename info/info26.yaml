@@ -1,0 +1,24 @@
+experiment: 26
+trajectory: translation_x.csv
+timescale: 0.75
+motors: upgraded motors (CF)
+propellers: upgraded propellers (QProp)
+Kpos_Px: 10.0
+Kpos_Py: 10.0
+Kpos_Pz: 10.0
+Kpos_Dx: 12.0
+Kpos_Dy: 12.0
+Kpos_Dz: 12.0
+Kpos_Ix: 0.0
+Kpos_Iy: 0.0
+Kpos_Iz: 5.0
+KR_x: 0.008
+KR_y: 0.008
+KR_z: 0.009
+Kw_x: 0.001
+Kw_y: 0.001
+Kw_z: 0.0012
+KI_x: 0.015
+KI_y: 0.015
+KI_z: 0.018
+mass: 0.0368
