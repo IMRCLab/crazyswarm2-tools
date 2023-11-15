@@ -109,3 +109,11 @@ processing event: fixedFrequency (0)
 >>> created figure 7: Trajectories
 ...done creating figures
 ```
+
+# 3. model.py
+
+This script contains procedures to manipulate and add data to the report. For example, multiple interpolation techniques like the Cubic Spline can be found here.
+
+# 4. save.py
+
+This script generates the info file for the experiment, i.e. writes the current parameters of the file ```crazyflie.yaml``` into a new info file. The info file can be used with the corresponding log file to generate a report. Please adjust the filepath of the file ```crazyflie.yaml``` in the script ```save.py``` to your needs. It is recommended to save the parameters before doing an experiment so that you can easily reproduce the experiment later on.
