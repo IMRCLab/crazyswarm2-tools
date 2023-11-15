@@ -136,8 +136,8 @@ figures:
   type: 2d subplots
   marker: line
   marker_kwargs:
-    marker: o
-    ms: 0.7
+    # marker: o
+    # ms: 0.7
     linewidth: 0.5
   structure:
   - x_axis: [fitTimestamp, timestamp]
@@ -365,55 +365,55 @@ additional_data:
   - source: stateEstimateZ.px
     target: fitZ.px
     type: bs
-    smoothing: 0
+    smoothing: 1
     # degree:
     derivative: 0
   - source: stateEstimateZ.py
     target: fitZ.py
     type: bs
-    smoothing: 0
+    smoothing: 1
     # degree:
     derivative: 0
   - source: stateEstimateZ.pz
     target: fitZ.pz
     type: bs
-    smoothing: 0
+    smoothing: 1
     # degree:
     derivative: 0
   - source: stateEstimateZ.px
     target: fitZ.pvx
     type: bs
-    smoothing: 0
+    smoothing: 1
     # degree:
     derivative: 1
   - source: stateEstimateZ.py
     target: fitZ.pvy
     type: bs
-    smoothing: 0
+    smoothing: 1
     # degree:
     derivative: 1
   - source: stateEstimateZ.pz
     target: fitZ.pvz
     type: bs
-    smoothing: 0
+    smoothing: 1
     # degree:
     derivative: 1
   - source: stateEstimateZ.px
     target: fitZ.pax
     type: bs
-    smoothing: 0
+    smoothing: 1
     # degree:
     derivative: 2
   - source: stateEstimateZ.py
     target: fitZ.pay
     type: bs
-    smoothing: 0
+    smoothing: 1
     # degree:
     derivative: 2
   - source: stateEstimateZ.pz
     target: fitZ.paz
     type: bs
-    smoothing: 0
+    smoothing: 1
     # degree:
     derivative: 2
   

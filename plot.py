@@ -129,15 +129,18 @@ def add_data(data, settings):
         # print(f"found target: {info['target']}")
         name, data_new = model.DataHelper.generate_data(data, event, info)
         data[event][name] = data_new
-        print(f">>> added data: {name}")
+        print(f">>> added data: {name} ({info['type']})")
         # print(f">>> data shape: {data_new.shape}")
 
     print("...done adding data")
 
 
 def create_figures(data_usd, settings, log_str):
-    debug = True
-    debug_figure_number = 6 # figure 6: "Payload Positions"
+    debug_all = False
+    debug = False
+    debug_figure_number = 6 # payload positions
+    # debug_figure_number = 7 # payload velocities
+
 
     log_path = os.path.join(settings["data_dir"], log_str)
     print("log file: {}".format(log_path))
@@ -280,7 +283,7 @@ def create_figures(data_usd, settings, log_str):
                     ax.grid(True)
 
                 # show plot for debugging
-                if debug and figure_count == debug_figure_number-1:
+                if debug and figure_count == debug_figure_number-1 or debug_all:
                     plt.show()
 
                 fig.suptitle(title, fontsize=16)

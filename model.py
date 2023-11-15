@@ -63,12 +63,11 @@ class DataHelper:
     def generate_data_bs(x: np.ndarray, y: np.ndarray, x_fit: np.ndarray, derivative: int, smoothing: float) -> np.ndarray:
         tck = splrep(x, y, s=smoothing)
         bs = BSpline(*tck)
-        bs = bs.derivative(derivative)
 
         if x_fit is not None:
-            return bs(x_fit)
+            return bs(x_fit, derivative)
         
-        return bs(x)
+        return bs(x, derivative)
     
 
 if __name__ == "__main__":
