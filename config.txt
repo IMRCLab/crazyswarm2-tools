@@ -1,0 +1,113 @@
+# Tuning Experiments
+# 1     # version
+# 512   # buffer size in bytes
+# log1   # file name
+# 0     # enable on startup (0/1)
+# on:fixedFrequency
+# 250     # frequency in Hz
+# 1     # mode (0: disabled, 1: synchronous stabilizer, 2: asynchronous)
+# stateEstimateZ.x
+# stateEstimateZ.y
+# stateEstimateZ.z
+# stateEstimateZ.vx
+# stateEstimateZ.vy
+# stateEstimateZ.vz
+# ctrltargetZ.x
+# ctrltargetZ.y
+# ctrltargetZ.z
+# ctrltargetZ.vx
+# ctrltargetZ.vy
+# ctrltargetZ.vz
+# ctrlLee.rpyx
+# ctrlLee.rpyy
+# ctrlLee.rpyz
+# ctrlLee.rpydx
+# ctrlLee.rpydy
+# ctrlLee.rpydz
+# ctrlLee.omegax
+# ctrlLee.omegay
+# ctrlLee.omegaz
+# ctrlLee.omegarx
+# ctrlLee.omegary
+# ctrlLee.omegarz
+# ctrlLee.thrustSI
+# ctrlLee.torquex
+# ctrlLee.torquey
+# ctrlLee.torquez
+# # ctrlLee.Kpos_Px
+# # ctrlLee.Kpos_Py
+# # ctrlLee.Kpos_Pz
+# # ctrlLee.Kpos_Dx
+# # ctrlLee.Kpos_Dy
+# # ctrlLee.Kpos_Dz
+# # ctrlLee.KR_x
+# # ctrlLee.KR_y
+# # ctrlLee.KR_z
+# # ctrlLee.Kw_x
+# # ctrlLee.Kw_y
+# # ctrlLee.Kw_z
+
+# Modeling Experiments
+1     # version
+512   # buffer size in bytes
+log1   # file name
+0     # enable on startup (0/1)
+on:fixedFrequency
+250     # frequency in Hz
+1     # mode (0: disabled, 1: synchronous stabilizer, 2: asynchronous)
+stateEstimateZ.x
+stateEstimateZ.y
+stateEstimateZ.z
+stateEstimateZ.vx
+stateEstimateZ.vy
+stateEstimateZ.vz
+ctrltargetZ.x
+ctrltargetZ.y
+ctrltargetZ.z
+ctrltargetZ.vx
+ctrltargetZ.vy
+ctrltargetZ.vz
+ctrlLee.rpyx
+ctrlLee.rpyy
+ctrlLee.rpyz
+ctrlLee.rpydx
+ctrlLee.rpydy
+ctrlLee.rpydz
+ctrlLee.omegax
+ctrlLee.omegay
+ctrlLee.omegaz
+acc.x
+acc.y
+acc.z
+ctrlLee.omegarx
+ctrlLee.omegary
+ctrlLee.omegarz
+ctrlLee.thrustSI
+ctrlLee.torquex
+ctrlLee.torquey
+ctrlLee.torquez
+# ctrlLee.Kpos_Px
+# ctrlLee.Kpos_Py
+# ctrlLee.Kpos_Pz
+# ctrlLee.Kpos_Dx
+# ctrlLee.Kpos_Dy
+# ctrlLee.Kpos_Dz
+# ctrlLee.KR_x
+# ctrlLee.KR_y 
+# ctrlLee.KR_z
+# ctrlLee.Kw_x
+# ctrlLee.Kw_y
+# ctrlLee.Kw_z
+stateEstimateZ.px 
+stateEstimateZ.py
+stateEstimateZ.pz
+stateEstimateZ.pvx
+stateEstimateZ.pvy
+stateEstimateZ.pvz
+locSrv.x
+locSrv.y
+locSrv.z
+locSrv.qx
+locSrv.qy
+locSrv.qz
+locSrv.qw
