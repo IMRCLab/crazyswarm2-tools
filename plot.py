@@ -309,9 +309,9 @@ if __name__ == "__main__":
     with open(settings_file, 'r') as f:
         settings = yaml.load(f, Loader=yaml.FullLoader)
 
-    mode = "manual single"
+    # mode = "manual single"
     # mode = "manual range"
-    # mode = "auto"
+    mode = "auto"
 
     if mode == "manual single":
         # get the log number from the user
