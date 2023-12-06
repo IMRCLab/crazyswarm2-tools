@@ -353,10 +353,11 @@ convert_units:
 #   locSrv.qw: 
 
 # info for adding additional data (fmi: model.py)
-# (1) type: linspace  -> takes data and returns data with more points in between (needs step)
-# (2) type: poly      -> takes data and returns data of a fitted polynomial, or its derivative (needs derivative, degree)
-# (3) type: cs        -> takes data and returns data of a cubic spline, or its derivative (needs derivative)
-# (4) type: bs        -> takes data and returns data of a b-spline, or its derivative (needs derivative, smoothing)
+# (1) type: linspace          -> takes data and returns data with more points in between (needs step)
+# (2) type: poly              -> takes data and returns data of a fitted polynomial, or its derivative (needs derivative, degree)
+# (3) type: cs                -> takes data and returns data of a cubic spline, or its derivative (needs derivative)
+# (4) type: bs                -> takes data and returns data of a b-spline, or its derivative (needs derivative, smoothing)
+# (5) type: residuals_payload -> processes data to compute the payload model residuals (needs original_length)
 additional_data:
   - source: timestamp
     target: fitTimestamp
@@ -416,6 +417,50 @@ additional_data:
     smoothing: 1
     # degree:
     derivative: 2
+  - target: residuals_payload
+    type: residuals_payload
+  - source: stateEstimateZ.px
+    target: fitZOriginalLength.px
+    type: bs
+    smoothing: 1
+    # degree:
+    derivative: 0
+    original_length: True
+  - source: stateEstimateZ.py
+    target: fitZOriginalLength.py
+    type: bs
+    smoothing: 1
+    # degree:
+    derivative: 0
+    original_length: True
+  - source: stateEstimateZ.pz
+    target: fitZOriginalLength.pz
+    type: bs
+    smoothing: 1
+    # degree:
+    derivative: 0
+    original_length: True
+  - source: stateEstimateZ.px
+    target: fitZOriginalLength.pvx
+    type: bs
+    smoothing: 1
+    # degree:
+    derivative: 1
+    original_length: True
+  - source: stateEstimateZ.py
+    target: fitZOriginalLength.pvy
+    type: bs
+    smoothing: 1
+    # degree:
+    derivative: 1
+    original_length: True
+  - source: stateEstimateZ.pz
+    target: fitZOriginalLength.pvz
+    type: bs
+    smoothing: 1
+    # degree:
+    derivative: 1
+    original_length: True
   
   
 

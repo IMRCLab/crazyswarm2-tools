@@ -2,3 +2,4 @@ numpy
 matplotlib
 PyYaml
 scipy
+rowan
