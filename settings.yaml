@@ -417,8 +417,6 @@ additional_data:
     smoothing: 1
     # degree:
     derivative: 2
-  - target: residuals_payload
-    type: residuals_payload
   - source: stateEstimateZ.px
     target: fitZOriginalLength.px
     type: bs
@@ -461,6 +459,5 @@ additional_data:
     # degree:
     derivative: 1
     original_length: True
-  
-  
-
+  - target: residuals_payload
+    type: residuals_payload

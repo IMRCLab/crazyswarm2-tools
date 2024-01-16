@@ -14,7 +14,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np
 
 
-import model
+import data_helper
 
 
 def compute_tracking_error(data, settings):
@@ -127,7 +127,7 @@ def add_data(data, settings):
     
     for info in settings["additional_data"]:
         # print(f"found target: {info['target']}")
-        name, data_new = model.DataHelper.generate_data(data, event, info)
+        name, data_new = data_helper.DataHelper.generate_data(data, event, info)
         data[event][name] = data_new
         print(f">>> added data: {name} ({info['type']})")
         # print(f">>> data shape: {data_new.shape}")

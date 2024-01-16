@@ -7,7 +7,8 @@ from numpy.polynomial import polynomial as P
 from scipy.interpolate import CubicSpline, BSpline, splrep
 import matplotlib.pyplot as plt
 
-import uav
+
+from model_payload import ResidualsPayload
 
 
 class DataHelper:
@@ -78,77 +79,6 @@ class DataHelper:
         res_payload = ResidualsPayload(data)
 
         return res_payload.compute_residuals()
-
-
-class ResidualsPayload():
-    def __init__(self, data: dict[str, np.ndarray]) -> None:
-        self.data = data
-        self.n = len(self.data["timestamp"])
-
-        self.n_uav = 13
-        self.n_payload = 19
-        self.n_input = 4
-
-        self.lc = 0.5  
-        self.m_uav  = 0.032  
-        self.m_payload = 0.05   
-        
-        self.stacked_states_data = np.zeros((self.n, self.n_payload))
-        self.construct_stacked_states_data()
-
-        self.stacked_inputs_data = np.zeros((self.n, self.n_input))
-        self.construct_stacked_inputs_data()
-
-        self.stacked_states_model = np.zeros((self.n, self.n_payload))
-        self.construct_stacked_states_model()
-
-        # self.uav_model = uav.UavModel()
-        # self.payload_model = uav.PayloadModel()
-
-    def construct_stacked_states_data(self) -> None:
-        self.stacked_states_data[:, 0] = self.data["fitZOriginalLength.px"]
-        self.stacked_states_data[:, 1] = self.data["fitZOriginalLength.py"]
-        self.stacked_states_data[:, 2] = self.data["fitZOriginalLength.pz"]
-        
-        self.stacked_states_data[:, 3] = self.data["fitZOriginalLength.pvx"]
-        self.stacked_states_data[:, 4] = self.data["fitZOriginalLength.pvy"]
-        self.stacked_states_data[:, 5] = self.data["fitZOriginalLength.pvz"]
-
-        self.stacked_states_data[:, 6] = (self.data["fitZOriginalLength.px"] - self.data["locSrv.x"]) / self.lc
-        self.stacked_states_data[:, 7] = (self.data["fitZOriginalLength.py"] - self.data["locSrv.y"]) / self.lc
-        self.stacked_states_data[:, 8] = (self.data["fitZOriginalLength.pz"] - self.data["locSrv.z"]) / self.lc
-
-        self.stacked_states_data[:, 9] = (self.data["fitZOriginalLength.pvx"] - self.data["stateEstimateZ.vx"]) / self.lc
-        self.stacked_states_data[:, 10] = (self.data["fitZOriginalLength.pvy"] - self.data["stateEstimateZ.vy"]) / self.lc
-        self.stacked_states_data[:, 11] = (self.data["fitZOriginalLength.pvz"] - self.data["stateEstimateZ.vz"]) / self.lc
-
-        self.stacked_states_data[:, 12] = self.data["locSrv.qw"]
-        self.stacked_states_data[:, 13] = self.data["locSrv.qx"]
-        self.stacked_states_data[:, 14] = self.data["locSrv.qy"]
-        self.stacked_states_data[:, 15] = self.data["locSrv.qz"]
-
-        self.stacked_states_data[:, 16] = self.data["ctrlLee.omegax"]
-        self.stacked_states_data[:, 17] = self.data["ctrlLee.omegay"]
-        self.stacked_states_data[:, 18] = self.data["ctrlLee.omegaz"]
-
-    def construct_stacked_inputs_data(self) -> None:  
-        self.stacked_inputs_data[:, 0] = self.data["ctrlLee.thrustSI"]
-        self.stacked_inputs_data[:, 1] = self.data["ctrlLee.torquex"]
-        self.stacked_inputs_data[:, 2] = self.data["ctrlLee.torquey"]
-        self.stacked_inputs_data[:, 3] = self.data["ctrlLee.torquez"]
-
-    def construct_stacked_states_model(self) -> None:
-        pass
-
-    def compute_residuals(self) -> np.ndarray:
-        return self.compute_error()
-    
-    def compute_error(self) -> np.ndarray:
-        # e of pos_x, pos_y, pos_z for starters
-        pass
-
-    def step(self) -> None:
-        pass
     
     
 if __name__ == "__main__":
