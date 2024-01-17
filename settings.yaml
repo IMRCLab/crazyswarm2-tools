@@ -271,17 +271,17 @@ figures:
   structure:
   - x_axis: [timestamp]
     y_axis: [error.px]
-    legend: []
+    legend: [""]
     x_label: "$t [s]$"
     y_label: "$e_x [m]$"
   - x_axis: [timestamp]
     y_axis: [error.py]
-    legend: []
+    legend: [""]
     x_label: "$t [s]$"
     y_label: "$e_y [m]$"
   - x_axis: [timestamp]
     y_axis: [error.pz]
-    legend: []
+    legend: [""]
     x_label: "$t [s]$"
     y_label: "$e_z [m]$"
 - title: Payload Velocity Errors
@@ -294,17 +294,17 @@ figures:
   structure:
   - x_axis: [timestamp]
     y_axis: [error.pvx]
-    legend: []
+    legend: [""]
     x_label: "$t [s]$"
     y_label: "$e_{\\dot x} [m/s]$"
   - x_axis: [timestamp]
     y_axis: [error.pvy]
-    legend: []
+    legend: [""]
     x_label: "$t [s]$"
     y_label: "$e_{\\dot y} [m/s]$"
   - x_axis: [timestamp]
     y_axis: [error.pvz]
-    legend: []
+    legend: [""]
     x_label: "$t [s]$"
     y_label: "$e_{\\dot z} [m/s]$"
 - title: Cable Unit Vector Error
@@ -317,17 +317,17 @@ figures:
   structure:
   - x_axis: [timestamp]
     y_axis: [error.cpx]
-    legend: []
+    legend: [""]
     x_label: "$t [s]$"
     y_label: "$e_{cp_x} [m]$"
   - x_axis: [timestamp]
     y_axis: [error.cpy]
-    legend: []
+    legend: [""]
     x_label: "$t [s]$"
     y_label: "$e_{cp_y} [m]$"
-  - x_axis: [timestamp]
+  - x_axis: [timestaymp]
     y_axis: [error.cpz]
-    legend: []
+    legend: [""]
     x_label: "$t [s]$"
     y_label: "$e_{cp_z} [m]$"
 # - title: Cable Angular Velocity Errors
@@ -491,7 +491,7 @@ convert_units:
 # (2) type: poly      -> takes data and returns data of a fitted polynomial, or its derivative (needs derivative, degree)
 # (3) type: cs        -> takes data and returns data of a cubic spline, or its derivative (needs derivative)
 # (4) type: bs        -> takes data and returns data of a b-spline, or its derivative (needs derivative, smoothing)
-# (5) type: custom    -> processes data to compute and return new custom data vectors (based on target string)
+# (5) type: custom    -> processes data to compute and return new custom data vectors (based on target string list)
 additional_data:
   - source: timestamp
     target: fitTimestamp
@@ -593,39 +593,23 @@ additional_data:
     # degree:
     derivative: 1
     original_length: True
-  - target: error.px
-    type: custom
-  - target: error.py
-    type: custom
-  - target: error.pz
-    type: custom
-  - target: error.pvx
-    type: custom
-  - target: error.pvy
-    type: custom
-  - target: error.pvz
-    type: custom
-  - target: error.cpx
-    type: custom
-  - target: error.cpy
-    type: custom
-  - target: error.cpz
-    type: custom
-  # - target: error.cwx
-  #   type: custom
-  # - target: error.cwy
-  #   type: custom
-  # - target: error.cwz
-  #   type: custom
-  # - target: error.rpyx
-  #   type: custom
-  # - target: error.rpyy
-  #   type: custom
-  # - target: error.rpyz
-  #   type: custom
-  # - target: error.wx
-  #   type: custom
-  # - target: error.wy
-  #   type: custom
-  # - target: error.wz
-  #   type: custom
+  - type: custom
+    target: 
+    - error.px
+    - error.py
+    - error.pz
+    - error.pvx
+    - error.pvy
+    - error.pvz
+    - error.cpx
+    - error.cpy
+    - error.cpz
+    # - error.cwx
+    # - error.cwy
+    # - error.cwz
+    # - error.rpyx
+    # - error.rpyy
+    # - error.rpyz
+    # - error.wx
+    # - error.wy
+    # - error.wz

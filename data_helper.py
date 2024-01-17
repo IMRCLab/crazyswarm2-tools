@@ -18,7 +18,7 @@ class DataHelper:
     @staticmethod
     def generate_data(data: dict[str, np.ndarray], 
                       event: str, 
-                      info: dict[str, str | int | float]) -> tuple[str, np.ndarray]:
+                      info: dict[str, str | int | float]) -> dict[str, np.ndarray]:
         source = data[event].get(info.get("source", None), None)
         t = data[event]["timestamp"]
         t_fit = data[event].get("fitTimestamp", None)
@@ -27,19 +27,28 @@ class DataHelper:
             raise ValueError("Derivative must be greater than or equal to 0")
 
         if info["type"] == "linspace":
-            data = DataHelper.generate_data_linspace(source, info["step"])
+            data_new = DataHelper.generate_data_linspace(source, info["step"])
         elif info["type"] == "poly":
-            data = DataHelper.generate_data_poly(t, source, t_fit, info)
+            data_new = DataHelper.generate_data_poly(t, source, t_fit, info)
         elif info["type"] == "cs":
-            data = DataHelper.generate_data_cs(t, source, t_fit, info)
+            data_new = DataHelper.generate_data_cs(t, source, t_fit, info)
         elif info["type"] == "bs":
-            data = DataHelper.generate_data_bs(t, source, t_fit, info)
+            data_new = DataHelper.generate_data_bs(t, source, t_fit, info)
         elif info["type"] == "custom":
-            data = DataHelper.generate_data_custom(data[event], info["target"])
+            data_new = DataHelper.generate_data_custom(data[event], info["target"])
         else:
             raise NotImplementedError
 
-        return info["target"], data
+        # exit 1: create a new dictionary from the new data list and return
+        if isinstance(info["target"], list):
+            dict_new = {}
+            for i, target in enumerate(info["target"]):
+                dict_new[target] = data_new[i]
+            
+            return dict_new
+
+        # exit 2: 
+        return {info["target"]: data_new}
 
     @staticmethod
     def generate_data_linspace(x: np.ndarray, step: int) -> np.ndarray:
@@ -75,29 +84,31 @@ class DataHelper:
         return bs(x, info["derivative"])  
     
     @staticmethod
-    def generate_data_custom(data: dict[str, np.ndarray], target: str) -> np.ndarray:
+    def generate_data_custom(data: dict[str, np.ndarray], target_list: list[str]) -> np.ndarray:
         # init objects for computing custom data (residuals, state errors, etc.)
         res_payload = ResidualsPayload(data)
 
         # check and generate target for custom data
-        if target == "error.px":
-            custom_data = res_payload.get_error_payload_position_x()
-        elif target == "error.py":
-            custom_data = res_payload.get_error_payload_position_y()
-        elif target == "error.pz":
-            custom_data = res_payload.get_error_payload_position_z()
-        elif target == "error.pvx":
-            custom_data = res_payload.get_error_payload_velocity_x()
-        elif target == "error.pvy":
-            custom_data = res_payload.get_error_payload_velocity_y()
-        elif target == "error.pvz":
-            custom_data = res_payload.get_error_payload_velocity_z()
-        elif target == "error.cpx":
-            custom_data = res_payload.get_error_cable_unit_vector_x()
-        elif target == "error.cpy":
-            custom_data = res_payload.get_error_cable_unit_vector_y()
-        elif target == "error.cpz":
-            custom_data = res_payload.get_error_cable_unit_vector_z()
+        custom_data = []
+        for target in target_list:
+            if target == "error.px":
+                custom_data.append(res_payload.get_error_payload_position_x())
+            elif target == "error.py":
+                custom_data.append(res_payload.get_error_payload_position_y())
+            elif target == "error.pz":
+                custom_data.append(res_payload.get_error_payload_position_z())
+            elif target == "error.pvx":
+                custom_data.append(res_payload.get_error_payload_velocity_x())
+            elif target == "error.pvy":
+                custom_data.append(res_payload.get_error_payload_velocity_x())
+            elif target == "error.pvz":
+                custom_data.append(res_payload.get_error_payload_velocity_x())
+            elif target == "error.cpx":
+                custom_data.append(res_payload.get_error_cable_unit_vector_x())
+            elif target == "error.cpy":
+                custom_data.append(res_payload.get_error_cable_unit_vector_y())
+            elif target == "error.cpz":
+                custom_data.append(res_payload.get_error_cable_unit_vector_z())
 
         return custom_data
     

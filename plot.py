@@ -127,9 +127,9 @@ def add_data(data, settings):
     
     for info in settings["additional_data"]:
         # print(f"found target: {info['target']}")
-        name, data_new = data_helper.DataHelper.generate_data(data, event, info)
-        data[event][name] = data_new
-        print(f">>> added data: {name} ({info['type']})")
+        dict_new = data_helper.DataHelper.generate_data(data, event, info)
+        data[event].update(dict_new)
+        print(f">>> added data: {info['type']} -> {list(dict_new.keys())}")
         # print(f">>> data shape: {data_new.shape}")
 
     print("...done adding data")
@@ -315,7 +315,9 @@ if __name__ == "__main__":
 
     if mode == "manual single":
         # get the log number from the user
-        log_num = input("Enter the logging number: ")
+        # log_num = input("Enter the logging number: ")
+        log_num = 182
+        print(f"Processing log {log_num}")
         log_str = f"log{log_num}"
 
         # decode binary log data
