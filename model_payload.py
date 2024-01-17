@@ -1,6 +1,7 @@
 import numpy as np
 from rowan.functions import _promote_vec, _validate_unit, exp, multiply
 from rowan import from_matrix, to_matrix, to_euler, from_euler
+import time
 
 
 def skew(w):
@@ -28,9 +29,9 @@ class ResidualsPayload():
         self.g  = np.array([0, 0, -self.mt * 9.81])    # gravity vector [m/s^2]
 
         # uav model parameters (Khaled's script: uav.py) 
-        self.I = 1e-6 * np.array([16.571710, 0.830806, 0.718277],
-                                 [0.830806, 16.655602, 1.800197],
-                                 [0.718277, 1.800197, 29.261652])
+        self.I = 1e-6 * np.array([[16.571710, 0.830806, 0.718277],
+                                  [0.830806, 16.655602, 1.800197],
+                                  [0.718277, 1.800197, 29.261652]])
         self.invI = np.linalg.inv(self.I)
 
         # init required matrices
@@ -39,11 +40,36 @@ class ResidualsPayload():
         self.stacked_states_model   = np.zeros((self.n, self.n_payload))
         self.stacked_errors         = np.zeros((self.n, self.n_payload))
         
+        print("===========================================")
+        print("ResidualsPayload object created")
+        print("Number of data points: ", self.n)
+        print("===========================================")
+        print("Constructing stacked states from data...")
+        t1 = time.perf_counter()
         self.construct_stacked_states_data()
+        t2 = time.perf_counter()
+        print("Constructing stacked states from data took: ", t2 - t1)
+        print("===========================================")
+        print("Constructing stacked inputs from data...")
+        t1 = time.perf_counter()
         self.construct_stacked_inputs_data()
+        t2 = time.perf_counter()
+        print("Constructing stacked inputs from data took: ", t2 - t1)
+        print("===========================================")
+        print("Constructing stacked states from model...")
+        t1 = time.perf_counter()
         self.construct_stacked_states_model()
-        
+        t2 = time.perf_counter()
+        print("Constructing stacked states from model took: ", t2 - t1)
+        print("===========================================")
+
+        print("Computing errors...")
+        t1 = time.perf_counter()
         self.compute_errors()
+        t2 = time.perf_counter()
+        print("Computing errors took: ", t2 - t1)
+        print("===========================================")
+        print("===========================================")
 
     def construct_stacked_states_data(self) -> None:
         # payload position
@@ -67,12 +93,14 @@ class ResidualsPayload():
         self.stacked_states_data[:, 11] = (self.data["fitZOriginalLength.pvz"] - self.data["stateEstimateZ.vz"]) / self.lc
 
         # uav orientation
-        self.stacked_states_data[:, 12] = self.data["locSrv.qw"]
-        self.stacked_states_data[:, 13] = self.data["locSrv.qx"]
-        self.stacked_states_data[:, 14] = self.data["locSrv.qy"]
-        self.stacked_states_data[:, 15] = self.data["locSrv.qz"]
+        phi = self.data["ctrlLee.rpyx"]
+        theta = self.data["ctrlLee.rpyy"]
+        psi = self.data["ctrlLee.rpyz"]
 
-        #   uav angular velocity
+        for i in range(self.n):
+            self.stacked_states_data[i, 12:16] = from_euler(phi[i], theta[i], psi[i], convention="xyz")
+
+        # uav angular velocity
         self.stacked_states_data[:, 16] = self.data["ctrlLee.omegax"]
         self.stacked_states_data[:, 17] = self.data["ctrlLee.omegay"]
         self.stacked_states_data[:, 18] = self.data["ctrlLee.omegaz"]
@@ -97,15 +125,15 @@ class ResidualsPayload():
 
         # extract thrust and torque
         fz        = self.stacked_inputs_data[index, 0]
-        fz_g      -= self.mp * 9.81
+        # fz_g      = fz - self.mp * 9.81
         tau       = self.stacked_inputs_data[index, 1:4]
 
-        # get the next uav orientation and angular velocity
+        # get the next uav orientation and angular velocity (uav model only)
         wdot  = self.invI @ (tau - skew(curr_w) @ self.I @ curr_w)
         wNext = wdot * self.delta[index - 1] + curr_w
         qNext = multiply(curr_q, exp(_promote_vec(curr_w * self.delta[index - 1] / 2))) 
         
-        # get the next payload position and translational velocity
+        # get the next payload position and translational velocity (payload uav model)
         R_IB  = to_matrix(curr_q)
         pd    = np.cross(curr_wl, curr_p)
         # u     = fz * R_IB * np.array([0, 0, 1]) 
@@ -113,13 +141,13 @@ class ResidualsPayload():
         VlNext   = al * self.delta[index - 1] + curr_vl
         poslNext = curr_vl * self.delta[index - 1] + curr_posl
 
-        # get the next cable unit vector and angular velocity of the unit vector 
-        wld  = (1 / (self.lc * self.m)) * ( skew(-curr_p) @ R_IB @ np.array([0, 0, fz]))
-        wlNext  = wld * self.dt + curr_wl
+        # get the next cable unit vector and angular velocity of the unit vector (payload uav model)
+        wld  = (1 / (self.lc * self.m)) * (skew(-curr_p) @ R_IB @ np.array([0, 0, fz]))
+        wlNext  = wld * self.delta[index - 1] + curr_wl
         pd    =  skew(curr_wl) @ curr_p
-        pNext    = pd * self.dt + curr_p
+        pNext    = pd * self.delta[index - 1] + curr_p
 
-        return np.array([poslNext, VlNext, pNext, wlNext, qNext, wNext])
+        return np.concatenate((poslNext, VlNext, pNext, wlNext, qNext, wNext)) 
 
     def reset_model(self) -> None:
         self.reset_states_model()
