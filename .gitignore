@@ -1,3 +1,4 @@
 reports/
 .venv/
 __pycache__/
+.vscode/
