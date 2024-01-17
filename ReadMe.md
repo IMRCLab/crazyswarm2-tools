@@ -1,6 +1,6 @@
 # Crazyswarm2 Tools
 
-This repository is based on the branch ```tune-lee``` from [Crazyswarm2](https://github.com/IMRCLab/crazyswarm2/tree/tune-lee). It contains all the data that was accumulated during the tuning experiments of the Lee controller. The data is stored in the folder ```_logs```. In here, you will find the script ```plot.py``` for yaml-based automatic report generation to process the logs. The script ```model.py``` focuses on manipulating and adding data to the automatically generated reports. In the following, you will find a guide on how to use the scripts and data.
+This repository is based on the branch ```tune-lee``` from [Crazyswarm2](https://github.com/IMRCLab/crazyswarm2/tree/tune-lee). It contains all the data that was accumulated during the tuning experiments of the Lee controller. The data is stored in the folder ```_logs```. In here, you will find the script ```plot.py``` for yaml-based automatic report generation to process the logs. The script ```data_helper.py``` focuses on manipulating and adding data to the automatically generated reports. In the following, you will find a guide on how to use the scripts and data.
 
 # I just want to plot the data of an experiment. What should I do?
 
@@ -8,7 +8,7 @@ This repository is based on the branch ```tune-lee``` from [Crazyswarm2](https:/
 2. Execute the script ```plot.py``` in ```_experiments```. Currently, the script is in the mode ```manual single``` which is why it will ask you which log you want to plot. The current one I am using is ```182```. 
 3. Wait for all plots to be generated. This may take a while.
 4. Check the folder ```_experiments/reports``` for the report. It should have the name ```log182.pdf```.
-5. If you wonder how to add additional data that is not included in the logs but computed on the basis of it, for example by fitting a cubic spline, check out the function ```add_data()``` in ```plot.py``` as well as the script ```model.py```. The file ```settings.yaml``` defines the requirements for the computation of additional data. There are two methods currently, using a single polynomial or cubic splines.
+5. If you wonder how to add additional data that is not included in the logs but computed on the basis of it, for example by fitting a cubic spline, check out the function ```add_data()``` in ```plot.py``` as well as the script ```data_helper.py```. The file ```settings.yaml``` defines the requirements for the computation of additional data. There, multiple methods to generate and add new data to the report from the logs are used. Also, the payload uav model can be found in the file ```model_payload.py```.
 
 # How can I reuse the data and code from the tuning experiments?
 
@@ -110,7 +110,7 @@ processing event: fixedFrequency (0)
 ...done creating figures
 ```
 
-# 3. model.py
+# 3. data_helper.py
 
 This script contains procedures to manipulate and add data to the report. For example, multiple interpolation techniques like the Cubic Spline can be found here.
 
