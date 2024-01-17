@@ -4,6 +4,7 @@ This repository is based on the branch ```tune-lee``` from [Crazyswarm2](https:/
 
 # I just want to plot the data of an experiment. What should I do?
 
+0. Create a virtual environment and install the requirements.
 1. Check if you have the folder ```_experiments/reports```. If not, create it.
 2. Execute the script ```plot.py``` in ```_experiments```. Currently, the script is in the mode ```manual single``` which is why it will ask you which log you want to plot. The current one I am using is ```182```. 
 3. Wait for all plots to be generated. This may take a while.
