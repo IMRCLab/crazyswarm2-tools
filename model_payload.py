@@ -42,7 +42,8 @@ class ResidualsPayload():
         self.construct_stacked_states_data()
         self.construct_stacked_inputs_data()
         self.construct_stacked_states_model()
-
+        
+        self.compute_errors()
 
     def construct_stacked_states_data(self) -> None:
         # payload position
@@ -113,7 +114,6 @@ class ResidualsPayload():
         poslNext = curr_vl * self.delta[index - 1] + curr_posl
 
         # get the next cable unit vector and angular velocity of the unit vector 
-        R_IB = to_matrix(curr_q)
         wld  = (1 / (self.lc * self.m)) * ( skew(-curr_p) @ R_IB @ np.array([0, 0, fz]))
         wlNext  = wld * self.dt + curr_wl
         pd    =  skew(curr_wl) @ curr_p
@@ -130,11 +130,40 @@ class ResidualsPayload():
 
     def reset_errors(self) -> None:
         self.stacked_errors = np.zeros((self.n, self.n_payload))
-
-    def compute_residuals(self) -> np.ndarray:
+    
+    def compute_errors(self) -> None:
+        self.stacked_errors = self.stacked_states_data - self.stacked_states_model
+    
+    def get_error_payload_position_x(self) -> np.ndarray:
+        return self.stacked_errors[:, 0]
+    
+    def get_error_payload_position_y(self) -> np.ndarray:
+        return self.stacked_errors[:, 1]
+    
+    def get_error_payload_position_z(self) -> np.ndarray:
+        return self.stacked_errors[:, 2]
+    
+    def get_error_payload_velocity_x(self) -> np.ndarray:
+        return self.stacked_errors[:, 3]
+    
+    def get_error_payload_velocity_y(self) -> np.ndarray:
+        return self.stacked_errors[:, 4]
+    
+    def get_error_payload_velocity_z(self) -> np.ndarray:
+        return self.stacked_errors[:, 5]
+    
+    def get_error_cable_unit_vector_x(self) -> np.ndarray:
+        return self.stacked_errors[:, 6]
+    
+    def get_error_cable_unit_vector_y(self) -> np.ndarray:
+        return self.stacked_errors[:, 7]
+    
+    def get_error_cable_unit_vector_z(self) -> np.ndarray:
+        return self.stacked_errors[:, 8]
+    
+    def compute_residuals(self) -> None:
         # TODO: define output of this function, what should be plotted?
 
-        return self.stacked_errors[:, 0]  # currently outputting the payload position error only
+        pass
+        # return self.stacked_errors[:, 0]  # currently outputting the payload position error only
     
-    def compute_error(self) -> np.ndarray:
-        self.stacked_errors = self.stacked_states_data - self.stacked_states_model

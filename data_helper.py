@@ -34,8 +34,8 @@ class DataHelper:
             data = DataHelper.generate_data_cs(t, source, t_fit, info)
         elif info["type"] == "bs":
             data = DataHelper.generate_data_bs(t, source, t_fit, info)
-        elif info["type"] == "residuals_payload":
-            data = DataHelper.generate_data_residuals_payload(data[event])
+        elif info["type"] == "custom":
+            data = DataHelper.generate_data_custom(data[event], info["target"])
         else:
             raise NotImplementedError
 
@@ -75,10 +75,31 @@ class DataHelper:
         return bs(x, info["derivative"])  
     
     @staticmethod
-    def generate_data_residuals_payload(data: dict[str, np.ndarray]) -> np.ndarray:
+    def generate_data_custom(data: dict[str, np.ndarray], target: str) -> np.ndarray:
+        # init objects for computing custom data (residuals, state errors, etc.)
         res_payload = ResidualsPayload(data)
 
-        return res_payload.compute_residuals()
+        # check and generate target for custom data
+        if target == "error.px":
+            custom_data = res_payload.get_error_payload_position_x()
+        elif target == "error.py":
+            custom_data = res_payload.get_error_payload_position_y()
+        elif target == "error.pz":
+            custom_data = res_payload.get_error_payload_position_z()
+        elif target == "error.pvx":
+            custom_data = res_payload.get_error_payload_velocity_x()
+        elif target == "error.pvy":
+            custom_data = res_payload.get_error_payload_velocity_y()
+        elif target == "error.pvz":
+            custom_data = res_payload.get_error_payload_velocity_z()
+        elif target == "error.cpx":
+            custom_data = res_payload.get_error_cable_unit_vector_x()
+        elif target == "error.cpy":
+            custom_data = res_payload.get_error_cable_unit_vector_y()
+        elif target == "error.cpz":
+            custom_data = res_payload.get_error_cable_unit_vector_z()
+
+        return custom_data
     
     
 if __name__ == "__main__":
