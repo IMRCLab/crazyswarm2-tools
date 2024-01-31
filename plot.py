@@ -112,7 +112,7 @@ def process_data(data, settings):
 
     data[event]["timestamp"] = (data[event]["timestamp"] - start_time)
 
-    # add additional data to the data dictionary)
+    # add additional data to the data dictionary
     add_data(data, settings)
 
     # print(data[event].keys())
@@ -138,7 +138,8 @@ def add_data(data, settings):
 def create_figures(data_usd, settings, log_str):
     debug_all = False
     debug = False
-    debug_figure_number = 6 # payload positions
+    debug_figure_number = 13 # payload position error
+    # debug_figure_number = 6 # payload positions
     # debug_figure_number = 7 # payload velocities
 
 
@@ -163,7 +164,7 @@ def create_figures(data_usd, settings, log_str):
 
     # read the parameters from the info file
     info_file = f"{settings['info_dir']}/{log_str.replace('log', 'info').split('_')[0]}.yaml" 
-    print("info file: {}".format(info_file))
+    print("... reading info file: {}".format(info_file))
 
     try:
         with open(info_file, "r") as f:
