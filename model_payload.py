@@ -213,6 +213,15 @@ class ResidualsPayload():
     def get_error_payload_angular_velocity_z(self) -> np.ndarray:
         return np.degrees(self.stacked_errors[:, 11])
     
+    def get_error_uav_angular_velocity_x(self) -> np.ndarray:
+        return np.degrees(self.stacked_errors[:, 16])
+    
+    def get_error_uav_angular_velocity_y(self) -> np.ndarray:
+        return np.degrees(self.stacked_errors[:, 17])
+    
+    def get_error_uav_angular_velocity_z(self) -> np.ndarray:
+        return np.degrees(self.stacked_errors[:, 18])
+    
     def compute_residuals(self) -> None:
         # TODO: define output of this function, what should be plotted?
 

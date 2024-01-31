@@ -115,6 +115,12 @@ class DataHelper:
                 custom_data.append(res_payload.get_error_payload_angular_velocity_y())
             elif target == "error.pwz":
                 custom_data.append(res_payload.get_error_payload_angular_velocity_z())
+            elif target == "error.wx":
+                custom_data.append(res_payload.get_error_uav_angular_velocity_x())
+            elif target == "error.wy":
+                custom_data.append(res_payload.get_error_uav_angular_velocity_y())
+            elif target == "error.wz":
+                custom_data.append(res_payload.get_error_uav_angular_velocity_z())
 
         return custom_data
     

@@ -228,7 +228,8 @@ def create_figures(data_usd, settings, log_str):
                         for j in range(n_x):
                             x = obj["x_axis"][j]
                             y = obj["y_axis"][j]
-
+                            
+                            # print(obj["legend"][j], bool(obj["legend"][j]))
                             if figure_info["marker"] == "line":
                                 ax[i].plot(data[x], data[y], label=obj["legend"][j], **figure_info["marker_kwargs"])
                             elif figure_info["marker"] == "scatter":
@@ -238,7 +239,8 @@ def create_figures(data_usd, settings, log_str):
 
                             ax[i].set_xlabel(obj["x_label"])
                             ax[i].set_ylabel(obj["y_label"])
-                            ax[i].legend(loc="lower left", fontsize=5)
+                            if obj["legend"][j]:
+                                ax[i].legend(loc="lower left", fontsize=5)
                             ax[i].grid(True)
 
                 # DEPRECATED
