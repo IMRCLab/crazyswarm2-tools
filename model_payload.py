@@ -1,8 +1,10 @@
 import numpy as np
 from rowan.functions import _promote_vec, _validate_unit, exp, multiply
-from rowan import from_matrix, to_matrix, to_euler, from_euler
+from rowan import from_matrix, to_matrix, to_euler, from_euler, normalize   
 import time
 
+def angle_normalization(alpha):
+    return (alpha + np.pi) % (2 * np.pi) - np.pi
 
 def skew(w):
     w = w.reshape(3,1)
@@ -37,10 +39,11 @@ class ResidualsPayload():
         self.invI = np.linalg.inv(self.I)
 
         # init required matrices
-        self.stacked_states_data    = np.zeros((self.n, self.n_payload))
-        self.stacked_inputs_data    = np.zeros((self.n, self.n_input))
-        self.stacked_states_model   = np.zeros((self.n, self.n_payload))
-        self.stacked_errors         = np.zeros((self.n, self.n_payload))
+        self.stacked_states_data                  = np.zeros((self.n, self.n_payload))
+        self.stacked_inputs_data                  = np.zeros((self.n, self.n_input))
+        self.stacked_states_model                 = np.zeros((self.n, self.n_payload))
+        self.stacked_errors                       = np.zeros((self.n, self.n_payload))
+        self.stacked_errors_uav_orientation_euler = np.zeros((self.n, 3))
         
         print("===========================================")
         print("ResidualsPayload object created")
@@ -98,9 +101,9 @@ class ResidualsPayload():
         self.stacked_states_data[:, 9:12] = np.cross(self.stacked_states_data[:, 6:9], cv) # pwx, pwy, pwz [rad/s]
 
         # (5) rpy - uav orientation
-        phi =   np.radians(self.data["ctrlLee.rpyx"])   # [rad]
-        theta = np.radians(self.data["ctrlLee.rpyy"])   # [rad]
-        psi =   np.radians(self.data["ctrlLee.rpyz"])   # [rad]
+        phi =   np.radians(self.data["ctrlLee.rpyx"]) 
+        theta = np.radians(self.data["ctrlLee.rpyy"]) 
+        psi =   np.radians(self.data["ctrlLee.rpyz"]) 
 
         print("construct_stacked_states_data(): converting Euler angles to quaternions...")
         for i in range(self.n):
@@ -108,9 +111,9 @@ class ResidualsPayload():
         print("construct_stacked_states_data(): converting Euler angles to quaternions...done")
 
         # (6) w - uav angular velocity
-        self.stacked_states_data[:, 16] = np.radians(self.data["ctrlLee.omegax"]) # [rad/s]
-        self.stacked_states_data[:, 17] = np.radians(self.data["ctrlLee.omegay"]) # [rad/s]
-        self.stacked_states_data[:, 18] = np.radians(self.data["ctrlLee.omegaz"]) # [rad/s]
+        self.stacked_states_data[:, 16] = np.radians(self.data["ctrlLee.omegax"])
+        self.stacked_states_data[:, 17] = np.radians(self.data["ctrlLee.omegay"])
+        self.stacked_states_data[:, 18] = np.radians(self.data["ctrlLee.omegaz"])
 
     def construct_stacked_inputs_data(self) -> None:  
         self.stacked_inputs_data[:, 0] = self.data["ctrlLee.thrustSI"]
@@ -176,6 +179,26 @@ class ResidualsPayload():
     
     def compute_errors(self) -> None:
         self.stacked_errors = self.stacked_states_data - self.stacked_states_model
+
+        # calculate the UAV orientation error in Euler angles, not quaternions
+        phi   = self.data["ctrlLee.rpyx"]
+        theta = self.data["ctrlLee.rpyy"]
+        psi   = self.data["ctrlLee.rpyz"]
+        stacked_angles_data = np.array([phi, theta, psi]).T
+
+        stacked_angles_model = np.zeros((self.n, 3))
+        print("compute_errors(): converting quaternions to Euler angles...")
+        for i in range(self.n):
+            q = normalize(self.stacked_states_model[i, 12:16]) 
+            stacked_angles_model[i, :] = to_euler(q, convention="xyz")
+        print("compute_errors(): converting quaternions to Euler angles...done")
+
+        self.stacked_errors_uav_orientation_euler = stacked_angles_data - stacked_angles_model   
+        for i in range(self.n):
+            r, p, y = self.stacked_errors_uav_orientation_euler[i, :]
+            self.stacked_errors_uav_orientation_euler[i, :] = np.array([angle_normalization(r), 
+                                                                        angle_normalization(p),
+                                                                        angle_normalization(y)])
     
     def get_error_payload_position_x(self) -> np.ndarray:
         return self.stacked_errors[:, 0]
@@ -213,6 +236,15 @@ class ResidualsPayload():
     def get_error_payload_angular_velocity_z(self) -> np.ndarray:
         return np.degrees(self.stacked_errors[:, 11])
     
+    def get_error_uav_orientation_x(self):
+        return np.degrees(self.stacked_errors_uav_orientation_euler[:, 0])
+    
+    def get_error_uav_orientation_y(self):
+        return np.degrees(self.stacked_errors_uav_orientation_euler[:, 1])
+    
+    def get_error_uav_orientation_z(self):
+        return np.degrees(self.stacked_errors_uav_orientation_euler[:, 2])
+    
     def get_error_uav_angular_velocity_x(self) -> np.ndarray:
         return np.degrees(self.stacked_errors[:, 16])
     
@@ -223,8 +255,4 @@ class ResidualsPayload():
         return np.degrees(self.stacked_errors[:, 18])
     
     def compute_residuals(self) -> None:
-        # TODO: define output of this function, what should be plotted?
-
         pass
-        # return self.stacked_errors[:, 0]  # currently outputting the payload position error only
-    
