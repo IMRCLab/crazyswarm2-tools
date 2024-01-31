@@ -16,6 +16,8 @@ class ResidualsPayload():
     def __init__(self, data: dict[str, np.ndarray]) -> None:
         self.data = data
         self.delta = np.diff(self.data["timestamp"])
+        self.delta_threshold = 0.2
+        print(f"sampling time vector: {self.delta}") # in log 182: one delta is approx. 0.004s, one outlier is approx. 1.5s
         
         self.n = len(self.data["timestamp"])
         self.n_payload = 19
@@ -112,7 +114,15 @@ class ResidualsPayload():
         self.stacked_inputs_data[:, 3] = self.data["ctrlLee.torquez"]
 
     def construct_stacked_states_model(self) -> None:
+        # the initial model-based state should be the same as the data-based state to create a zero error
+        self.stacked_states_model[0, :] = self.stacked_states_data[0, :]
+
         for i in range(1, self.n):
+            # create an error of zero if the sampling time of the log is too large
+            if self.delta[i - 1] > self.delta_threshold:
+                self.stacked_states_model[i, :] = self.stacked_states_data[i, :]
+                continue
+
             self.stacked_states_model[i, :] = self.stacked_states_data[i-1, :] + self.step(i) * self.delta[i-1]
 
     def step(self, index: int) -> np.ndarray:
