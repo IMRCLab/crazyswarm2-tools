@@ -109,6 +109,12 @@ class DataHelper:
                 custom_data.append(res_payload.get_error_cable_unit_vector_y())
             elif target == "error.cpz":
                 custom_data.append(res_payload.get_error_cable_unit_vector_z())
+            elif target == "error.pwx":
+                custom_data.append(res_payload.get_error_payload_angular_velocity_x())
+            elif target == "error.pwy": 
+                custom_data.append(res_payload.get_error_payload_angular_velocity_y())
+            elif target == "error.pwz":
+                custom_data.append(res_payload.get_error_payload_angular_velocity_z())
 
         return custom_data
     

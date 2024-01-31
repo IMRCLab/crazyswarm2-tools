@@ -74,38 +74,43 @@ class ResidualsPayload():
         print("===========================================")
 
     def construct_stacked_states_data(self) -> None:
-        # payload position
+        # (1) p - payload position
         self.stacked_states_data[:, 0] = self.data["fitZOriginalLength.px"]
         self.stacked_states_data[:, 1] = self.data["fitZOriginalLength.py"]
         self.stacked_states_data[:, 2] = self.data["fitZOriginalLength.pz"]
         
-        # payload velocity
+        # (2) pv - payload velocity
         self.stacked_states_data[:, 3] = self.data["fitZOriginalLength.pvx"]
         self.stacked_states_data[:, 4] = self.data["fitZOriginalLength.pvy"]
         self.stacked_states_data[:, 5] = self.data["fitZOriginalLength.pvz"]
 
-        # cable unit vector (from the uav to the payload)
-        self.stacked_states_data[:, 6] = (self.data["fitZOriginalLength.px"] - self.data["locSrv.x"]) / self.lc
-        self.stacked_states_data[:, 7] = (self.data["fitZOriginalLength.py"] - self.data["locSrv.y"]) / self.lc
-        self.stacked_states_data[:, 8] = (self.data["fitZOriginalLength.pz"] - self.data["locSrv.z"]) / self.lc
+        # (3) cp - cable unit vector (from the uav to the payload)
+        self.stacked_states_data[:, 6] = (self.data["fitZOriginalLength.px"] - self.data["locSrv.x"]) / self.lc # cpx
+        self.stacked_states_data[:, 7] = (self.data["fitZOriginalLength.py"] - self.data["locSrv.y"]) / self.lc # cpy
+        self.stacked_states_data[:, 8] = (self.data["fitZOriginalLength.pz"] - self.data["locSrv.z"]) / self.lc # cpz
 
-        # cable angular velocity
-        self.stacked_states_data[:, 9]  = (self.data["fitZOriginalLength.pvx"] - self.data["stateEstimateZ.vx"]) / self.lc
-        self.stacked_states_data[:, 10] = (self.data["fitZOriginalLength.pvy"] - self.data["stateEstimateZ.vy"]) / self.lc
-        self.stacked_states_data[:, 11] = (self.data["fitZOriginalLength.pvz"] - self.data["stateEstimateZ.vz"]) / self.lc
+        # (4) pw - payload angular velocity (pw = cp @ cpv)
+        cv = np.zeros((self.n, 3))
+        cv[:, 0] = (self.data["fitZOriginalLength.pvx"] - self.data["stateEstimateZ.vx"]) / self.lc # cpvx
+        cv[:, 1] = (self.data["fitZOriginalLength.pvy"] - self.data["stateEstimateZ.vy"]) / self.lc # cpvy
+        cv[:, 2] = (self.data["fitZOriginalLength.pvz"] - self.data["stateEstimateZ.vz"]) / self.lc # cpvz
 
-        # uav orientation
-        phi = self.data["ctrlLee.rpyx"]
-        theta = self.data["ctrlLee.rpyy"]
-        psi = self.data["ctrlLee.rpyz"]
+        self.stacked_states_data[:, 9:12] = np.cross(self.stacked_states_data[:, 6:9], cv) # pwx, pwy, pwz [rad/s]
 
+        # (5) rpy - uav orientation
+        phi =   np.radians(self.data["ctrlLee.rpyx"])   # [rad]
+        theta = np.radians(self.data["ctrlLee.rpyy"])   # [rad]
+        psi =   np.radians(self.data["ctrlLee.rpyz"])   # [rad]
+
+        print("construct_stacked_states_data(): converting Euler angles to quaternions...")
         for i in range(self.n):
             self.stacked_states_data[i, 12:16] = from_euler(phi[i], theta[i], psi[i], convention="xyz")
+        print("construct_stacked_states_data(): converting Euler angles to quaternions...done")
 
-        # uav angular velocity
-        self.stacked_states_data[:, 16] = self.data["ctrlLee.omegax"]
-        self.stacked_states_data[:, 17] = self.data["ctrlLee.omegay"]
-        self.stacked_states_data[:, 18] = self.data["ctrlLee.omegaz"]
+        # (6) w - uav angular velocity
+        self.stacked_states_data[:, 16] = np.radians(self.data["ctrlLee.omegax"]) # [rad/s]
+        self.stacked_states_data[:, 17] = np.radians(self.data["ctrlLee.omegay"]) # [rad/s]
+        self.stacked_states_data[:, 18] = np.radians(self.data["ctrlLee.omegaz"]) # [rad/s]
 
     def construct_stacked_inputs_data(self) -> None:  
         self.stacked_inputs_data[:, 0] = self.data["ctrlLee.thrustSI"]
@@ -198,6 +203,15 @@ class ResidualsPayload():
     
     def get_error_cable_unit_vector_z(self) -> np.ndarray:
         return self.stacked_errors[:, 8]
+    
+    def get_error_payload_angular_velocity_x(self) -> np.ndarray:
+        return np.degrees(self.stacked_errors[:, 9])
+    
+    def get_error_payload_angular_velocity_y(self) -> np.ndarray:
+        return np.degrees(self.stacked_errors[:, 10])
+    
+    def get_error_payload_angular_velocity_z(self) -> np.ndarray:
+        return np.degrees(self.stacked_errors[:, 11])
     
     def compute_residuals(self) -> None:
         # TODO: define output of this function, what should be plotted?

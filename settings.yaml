@@ -90,7 +90,7 @@ figures:
     legend: [ekf]
     x_label: "$t [s]$"
     y_label: "$\\ddot z [m/s^2]$"
-- title: UAV Angles (rpy)
+- title: UAV Angles (XYZ)
   type: 2d subplots
   marker: line
   marker_kwargs:
@@ -111,7 +111,7 @@ figures:
     legend: [actual, desired]
     x_label: "$t [s]$"
     y_label: "$\\psi [°]$"
-- title: UAV Angular Velocities (rpy)
+- title: UAV Angular Velocities (XYZ)
   type: 2d subplots
   marker: line
   marker_kwargs:
@@ -212,7 +212,7 @@ figures:
     legend: [actual]
     x_label: "$t [s]$"
     y_label: "$T [N]$"
-- title: Torques (xyz)
+- title: Torques (XYZ)
   type: 2d subplots
   marker: line
   marker_kwargs:
@@ -325,35 +325,35 @@ figures:
     legend: [""]
     x_label: "$t [s]$"
     y_label: "$e_{cp_y} [m]$"
-  - x_axis: [timestaymp]
+  - x_axis: [timestamp]
     y_axis: [error.cpz]
     legend: [""]
     x_label: "$t [s]$"
     y_label: "$e_{cp_z} [m]$"
-# - title: Cable Angular Velocity Errors
-#   type: 2d subplots
-#   marker: line
-#   marker_kwargs:
-#     # marker: o
-#     # ms: 0.7
-#     linewidth: 0.5
-#   structure:
-#   - x_axis: [timestamp]
-#     y_axis: [error.cwx]
-#     legend: []
-#     x_label: "$t [s]$"
-#     y_label: "$e_{cw_{\\dot x}} [m/s]$"
-#   - x_axis: [timestamp]
-#     y_axis: [error.cwy]
-#     legend: []
-#     x_label: "$t [s]$"
-#     y_label: "$e_{cw_{\\dot y}} [m/s]$"
-#   - x_axis: [timestamp]
-#     y_axis: [error.cwz]
-#     legend: []
-#     x_label: "$t [s]$"
-#     y_label: "$e_{cw_{\\dot z}} [m/s]$"
-# - title: UAV Angle Errors (rpy)
+- title: Payload Angular Velocity Errors (XYZ)
+  type: 2d subplots
+  marker: line
+  marker_kwargs:
+    # marker: o
+    # ms: 0.7
+    linewidth: 0.5
+  structure:
+  - x_axis: [timestamp]
+    y_axis: [error.pwx]
+    legend: [""]
+    x_label: "$t [s]$"
+    y_label: "$e_{pw_x} [°/s]$"
+  - x_axis: [timestamp]
+    y_axis: [error.pwy]
+    legend: [""]
+    x_label: "$t [s]$"
+    y_label: "$e_{pw_y} [°/s]$"
+  - x_axis: [timestamp]
+    y_axis: [error.pwz]
+    legend: [""]
+    x_label: "$t [s]$"
+    y_label: "$e_{pw_z} [°/s]$"
+# - title: UAV Angle Errors (XYZ)
 #   type: 2d subplots
 #   marker: line
 #   marker_kwargs:
@@ -374,7 +374,7 @@ figures:
 #     legend: []
 #     x_label: "$t [s]$"
 #     y_label: "$e_{\\psi} [°]$"
-# - title: UAV Angular Velocity Errors (rpy)
+# - title: UAV Angular Velocity Errors (XYZ)
 #   type: 2d subplots
 #   marker: line
 #   marker_kwargs:
@@ -439,7 +439,7 @@ convert_units:
   locSrv.qy: 1.0
   locSrv.qz: 1.0
   locSrv.qw: 1.0
-# units:
+# units for the report:
 #   timestamp: s
 #   stateEstimateZ.x: m
 #   stateEstimateZ.y: m
@@ -604,9 +604,9 @@ additional_data:
     - error.cpx
     - error.cpy
     - error.cpz
-    # - error.cwx
-    # - error.cwy
-    # - error.cwz
+    - error.pwx
+    - error.pwy
+    - error.pwz
     # - error.rpyx
     # - error.rpyy
     # - error.rpyz
