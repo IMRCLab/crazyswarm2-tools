@@ -194,11 +194,13 @@ class ResidualsPayload():
         print("compute_errors(): converting quaternions to Euler angles...done")
 
         self.stacked_errors_uav_orientation_euler = stacked_angles_data - stacked_angles_model   
-        for i in range(self.n):
-            r, p, y = self.stacked_errors_uav_orientation_euler[i, :]
-            self.stacked_errors_uav_orientation_euler[i, :] = np.array([angle_normalization(r), 
-                                                                        angle_normalization(p),
-                                                                        angle_normalization(y)])
+
+        # normalize the angle erorrs
+        # for i in range(self.n):
+        #     r, p, y = self.stacked_errors_uav_orientation_euler[i, :]
+        #     self.stacked_errors_uav_orientation_euler[i, :] = np.array([angle_normalization(r), 
+        #                                                                 angle_normalization(p),
+        #                                                                 angle_normalization(y)])
     
     def get_error_payload_position_x(self) -> np.ndarray:
         return self.stacked_errors[:, 0]
