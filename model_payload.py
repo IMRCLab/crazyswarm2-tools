@@ -44,6 +44,7 @@ class ResidualsPayload():
         self.stacked_states_model                 = np.zeros((self.n, self.n_payload))
         self.stacked_errors                       = np.zeros((self.n, self.n_payload))
         self.stacked_errors_uav_orientation_euler = np.zeros((self.n, 3))
+        self.stacked_residuals                    = np.zeros((self.n, self.n_input))
         
         print("===========================================")
         print("ResidualsPayload object created")
@@ -201,6 +202,9 @@ class ResidualsPayload():
         #     self.stacked_errors_uav_orientation_euler[i, :] = np.array([angle_normalization(r), 
         #                                                                 angle_normalization(p),
         #                                                                 angle_normalization(y)])
+
+    def compute_residuals(self) -> None:
+        pass
     
     def get_error_payload_position_x(self) -> np.ndarray:
         return self.stacked_errors[:, 0]
@@ -256,5 +260,14 @@ class ResidualsPayload():
     def get_error_uav_angular_velocity_z(self) -> np.ndarray:
         return np.degrees(self.stacked_errors[:, 18])
     
-    def compute_residuals(self) -> None:
-        pass
+    def get_residual_force(self) -> np.ndarray:
+        return self.stacked_residuals[:, 0]
+    
+    def get_residual_torque_x(self) -> np.ndarray:
+        return self.stacked_residuals[:, 1]
+    
+    def get_residual_torque_y(self) -> np.ndarray:
+        return self.stacked_residuals[:, 2]
+    
+    def get_residual_torque_z(self) -> np.ndarray:
+        return self.stacked_residuals[:, 3]

@@ -39,7 +39,7 @@ class DataHelper:
         else:
             raise NotImplementedError
 
-        # exit 1: create a new dictionary from the new data list and return
+        # exit 1: add each vector of the custom data list iteratively to the data dictionary and return
         if isinstance(info["target"], list):
             dict_new = {}
             for i, target in enumerate(info["target"]):
@@ -47,7 +47,7 @@ class DataHelper:
             
             return dict_new
 
-        # exit 2: 
+        # exit 2: add single vector to dictionary and return
         return {info["target"]: data_new}
 
     @staticmethod
@@ -84,7 +84,7 @@ class DataHelper:
         return bs(x, info["derivative"])  
     
     @staticmethod
-    def generate_data_custom(data: dict[str, np.ndarray], target_list: list[str]) -> np.ndarray:
+    def generate_data_custom(data: dict[str, np.ndarray], target_list: list[str]) -> list[np.ndarray]:
         # init objects for computing custom data (residuals, state errors, etc.)
         res_payload = ResidualsPayload(data)
 
@@ -127,6 +127,14 @@ class DataHelper:
                 custom_data.append(res_payload.get_error_uav_angular_velocity_y())
             elif target == "error.wz":
                 custom_data.append(res_payload.get_error_uav_angular_velocity_z())
+            elif target == "residual.f":
+                custom_data.append(res_payload.get_residual_force())
+            elif target == "residual.tx":
+                custom_data.append(res_payload.get_residual_torque_x())
+            elif target == "residual.ty":
+                custom_data.append(res_payload.get_residual_torque_y())
+            elif target == "residual.tz":
+                custom_data.append(res_payload.get_residual_torque_z())
 
         return custom_data
     

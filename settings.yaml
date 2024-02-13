@@ -77,17 +77,17 @@ figures:
   structure:
   - x_axis: [timestamp]
     y_axis: [acc.x]
-    legend: [ekf]
+    legend: [measured]
     x_label: "$t [s]$"
     y_label: "$\\ddot x [m/s^2]$"
   - x_axis: [timestamp]
     y_axis: [acc.y]
-    legend: [ekf]
+    legend: [measured]
     x_label: "$t [s]$"
     y_label: "$\\ddot y [m/s^2]$"
   - x_axis: [timestamp]
     y_axis: [acc.z]
-    legend: [ekf]
+    legend: [measured]
     x_label: "$t [s]$"
     y_label: "$\\ddot z [m/s^2]$"
 - title: UAV Angles (XYZ)
@@ -132,6 +132,29 @@ figures:
     legend: [actual, desired]
     x_label: "$t [s]$"
     y_label: "$\\dot \\psi [°/s]$"
+- title: UAV Angular Accelerations (XYZ)
+  type: 2d subplots
+  marker: line
+  marker_kwargs:
+    # marker: o
+    # ms: 0.7
+    linewidth: 0.5
+  structure:
+  - x_axis: [timestamp]
+    y_axis: [fitZOriginalLength.alphax]
+    legend: [fitted]
+    x_label: "$t [s]$"
+    y_label: "$\\dot \\phi [°/s^2]$"
+  - x_axis: [timestamp]
+    y_axis: [fitZOriginalLength.alphay]
+    legend: [fitted]
+    x_label: "$t [s]$"
+    y_label: "$\\dot \\theta [°/s^2]$"
+  - x_axis: [timestamp]
+    y_axis: [fitZOriginalLength.alphaz]
+    legend: [fitted]
+    x_label: "$t [s]$"
+    y_label: "$\\dot \\psi [°/s^2]$"
 - title: Payload Positions
   type: 2d subplots
   marker: line
@@ -493,10 +516,16 @@ convert_units:
 # (4) type: bs        -> takes data and returns data of a b-spline, or its derivative (needs derivative, smoothing)
 # (5) type: custom    -> processes data to compute and return new custom data vectors (based on target string list)
 additional_data:
+  # ==================================================
+  # fitting: new time vector
+  # ==================================================
   - source: timestamp
     target: fitTimestamp
     type: linspace
     step: 0.0001
+  # ==================================================
+  # fitting with new length
+  # ==================================================
   - source: stateEstimateZ.px
     target: fitZ.px
     type: bs
@@ -551,6 +580,30 @@ additional_data:
     smoothing: 1
     # degree:
     derivative: 2
+  # ==================================================
+  # fitting with original length
+  # ==================================================
+  - source: ctrlLee.rpyx
+    target: fitZOriginalLength.alphax
+    type: bs
+    smoothing: 1
+    # degree:
+    derivative: 2
+    original_length: True
+  - source: ctrlLee.rpyy
+    target: fitZOriginalLength.alphay
+    type: bs
+    smoothing: 1
+    # degree:
+    derivative: 2
+    original_length: True
+  - source: ctrlLee.rpyz
+    target: fitZOriginalLength.alphaz
+    type: bs
+    smoothing: 1
+    # degree:
+    derivative: 2
+    original_length: True
   - source: stateEstimateZ.px
     target: fitZOriginalLength.px
     type: bs
@@ -593,6 +646,9 @@ additional_data:
     # degree:
     derivative: 1
     original_length: True
+  # ==================================================
+  # custom data with original length respectively
+  # ==================================================
   - type: custom
     target: 
     - error.px
@@ -613,3 +669,8 @@ additional_data:
     - error.wx
     - error.wy
     - error.wz
+    # - residual.f
+    # - residual.tx
+    # - residual.ty
+    # - residual.tz
+  # ==================================================
