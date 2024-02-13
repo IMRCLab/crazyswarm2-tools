@@ -94,23 +94,28 @@ def file_guard(pdf_path):
 def process_data(data, settings):
     print("...processing data")
 
-    # adjust time
-    start_time = settings["start_time"]
-    # end_time = settings["end_time"]
-    event = settings["event_name"]
-
     # convert units
+    event = settings["event_name"]
     if settings["convert_units"]:
         for key, value in settings["convert_units"].items():
             data[event][key] = data[event][key] * value
 
-    # shift timestamp data
-    if start_time is None:
-        start_time = data[event]['timestamp'][0]
-    else:
-        start_time = min(start_time, data[event]['timestamp'][0])
+    # shift time vector to start at 0
+    data[event]["timestamp"] = (data[event]["timestamp"] - data[event]['timestamp'][0])
 
-    data[event]["timestamp"] = (data[event]["timestamp"] - start_time)
+    # crop data
+    start_time = settings["start_time"]
+    end_time = settings["end_time"]
+    
+    t = data[event]["timestamp"]
+    if start_time is not None:
+        for key, value in data[event].items():
+            data[event][key] = value[t >= start_time]
+
+    t = data[event]["timestamp"]
+    if end_time is not None:
+        for key, value in data[event].items():
+            data[event][key] = value[t <= end_time]
 
     # add additional data to the data dictionary
     add_data(data, settings)
@@ -138,7 +143,8 @@ def add_data(data, settings):
 def create_figures(data_usd, settings, log_str):
     debug_all = False
     debug = False
-    debug_figure_number = 13 # payload position error
+    # debug_figure_number = 4 # UAV angles
+    # debug_figure_number = 13 # payload position error
     # debug_figure_number = 6 # payload positions
     # debug_figure_number = 7 # payload velocities
 
