@@ -4,8 +4,8 @@ data_dir: logs
 # data_file: log129
 info_dir: info
 event_name: fixedFrequency
-start_time: # s
-end_time: # s (not in use currently)
+start_time: 2   # s (w.r.t log start time)
+end_time: 15    # s (w.r.t log start time)
 output_dir: reports
 figures_max:
 skip_data:
@@ -96,19 +96,19 @@ figures:
   marker_kwargs:
     linewidth: 0.5
   structure:
-  - x_axis: [timestamp, timestamp]
-    y_axis: [ctrlLee.rpyx, ctrlLee.rpydx]
-    legend: [actual, desired]
+  - x_axis: [timestamp, timestamp, timestamp]
+    y_axis: [fitZOriginalLength.rpyx, ctrlLee.rpyx, ctrlLee.rpydx]
+    legend: [fitted, ekf, desired]
     x_label: "$t [s]$"
     y_label: "$\\phi [°]$"
-  - x_axis: [timestamp, timestamp]
-    y_axis: [ctrlLee.rpyy, ctrlLee.rpydy]
-    legend: [actual, desired]
+  - x_axis: [timestamp, timestamp, timestamp]
+    y_axis: [fitZOriginalLength.rpyy, ctrlLee.rpyy, ctrlLee.rpydy]
+    legend: [fitted, ekf, desired]
     x_label: "$t [s]$"
     y_label: "$\\theta [°]$"
-  - x_axis: [timestamp, timestamp]
-    y_axis: [ctrlLee.rpyz, ctrlLee.rpydz]
-    legend: [actual, desired]
+  - x_axis: [timestamp, timestamp, timestamp]
+    y_axis: [fitZOriginalLength.rpyz, ctrlLee.rpyz, ctrlLee.rpydz]
+    legend: [fitted, ekf, desired]
     x_label: "$t [s]$"
     y_label: "$\\psi [°]$"
 - title: UAV Angular Velocities (XYZ)
@@ -117,19 +117,19 @@ figures:
   marker_kwargs:
     linewidth: 0.5
   structure:
-  - x_axis: [timestamp, timestamp]
-    y_axis: [ctrlLee.omegax, ctrlLee.omegarx]
-    legend: [actual, desired]
+  - x_axis: [timestamp, timestamp, timestamp]
+    y_axis: [fitZOriginalLength.omegax, ctrlLee.omegax, ctrlLee.omegarx]
+    legend: [fitted, ekf, desired]
     x_label: "$t [s]$"
     y_label: "$\\dot \\phi [°/s]$"
-  - x_axis: [timestamp, timestamp]
-    y_axis: [ctrlLee.omegay, ctrlLee.omegary]
-    legend: [actual, desired]
+  - x_axis: [timestamp, timestamp, timestamp]
+    y_axis: [fitZOriginalLength.omegay, ctrlLee.omegay, ctrlLee.omegary]
+    legend: [fitted, ekf, desired]
     x_label: "$t [s]$"
     y_label: "$\\dot \\theta [°/s]$"
-  - x_axis: [timestamp, timestamp]
-    y_axis: [ctrlLee.omegaz, ctrlLee.omegarz]
-    legend: [actual, desired]
+  - x_axis: [timestamp, timestamp, timestamp]
+    y_axis: [fitZOriginalLength.omegaz, ctrlLee.omegaz, ctrlLee.omegarz]
+    legend: [fitted, ekf, desired]
     x_label: "$t [s]$"
     y_label: "$\\dot \\psi [°/s]$"
 - title: UAV Angular Accelerations (XYZ)
@@ -584,16 +584,58 @@ additional_data:
   # fitting with original length
   # ==================================================
   - source: ctrlLee.rpyx
-    target: fitZOriginalLength.alphax
+    target: fitZOriginalLength.rpyx
+    type: bs
+    smoothing: 10
+    # degree:
+    derivative: 0
+    original_length: True
+  - source: ctrlLee.rpyy
+    target: fitZOriginalLength.rpyy
+    type: bs
+    smoothing: 10
+    # degree:
+    derivative: 0
+    original_length: True
+  - source: ctrlLee.rpyz
+    target: fitZOriginalLength.rpyz
     type: bs
     smoothing: 1
+    # degree:
+    derivative: 0
+    original_length: True
+  - source: ctrlLee.rpyx
+    target: fitZOriginalLength.omegax
+    type: bs
+    smoothing: 10
+    # degree:
+    derivative: 1
+    original_length: True
+  - source: ctrlLee.rpyy
+    target: fitZOriginalLength.omegay
+    type: bs
+    smoothing: 10
+    # degree:
+    derivative: 1
+    original_length: True
+  - source: ctrlLee.rpyz
+    target: fitZOriginalLength.omegaz
+    type: bs
+    smoothing: 1
+    # degree:
+    derivative: 1
+    original_length: True
+  - source: ctrlLee.rpyx
+    target: fitZOriginalLength.alphax
+    type: bs
+    smoothing: 10
     # degree:
     derivative: 2
     original_length: True
   - source: ctrlLee.rpyy
     target: fitZOriginalLength.alphay
     type: bs
-    smoothing: 1
+    smoothing: 10
     # degree:
     derivative: 2
     original_length: True
