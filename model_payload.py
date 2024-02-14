@@ -208,13 +208,6 @@ class ResidualsPayload():
         #                                                                 angle_normalization(y)])
 
     def compute_residuals(self) -> None:
-        self.compute_residual_thrust()
-        self.compute_residual_torques()
-
-    def compute_residual_thrust(self) -> None:
-        pass
-
-    def compute_residual_torques(self) -> None:
         stacked_w_x = np.radians(self.data["ctrlLee.omegax"])
         stacked_w_y = np.radians(self.data["ctrlLee.omegay"])
         stacked_w_z = np.radians(self.data["ctrlLee.omegaz"])
@@ -225,6 +218,13 @@ class ResidualsPayload():
         stacked_alpha_z = np.radians(self.data["fitZOriginalLength.alphaz"])
         stacked_alpha = np.array([stacked_alpha_x, stacked_alpha_y, stacked_alpha_z]).T
 
+        self.compute_residual_thrust(stacked_w, stacked_alpha)
+        self.compute_residual_torques(stacked_w, stacked_alpha)
+
+    def compute_residual_thrust(self, stacked_w: np.ndarray, stacked_alpha: np.ndarray) -> None:
+        pass
+
+    def compute_residual_torques(self, stacked_w: np.ndarray, stacked_alpha: np.ndarray) -> None:
         m = np.matmul(self.I, stacked_alpha[:, :, None])[:, :, 0]
         c = np.cross(stacked_w, np.matmul(self.I, stacked_w[:, :, None])[:, :, 0])
         self.stacked_residuals[:, 1:4] = m + c - self.stacked_inputs_data[:, 1:4]
