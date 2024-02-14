@@ -163,18 +163,18 @@ figures:
     # ms: 0.7
     linewidth: 0.5
   structure:
-  - x_axis: [fitTimestamp, timestamp]
-    y_axis: [fitZ.px, stateEstimateZ.px]
+  - x_axis: [timestamp, timestamp]
+    y_axis: [fitZOriginalLength.px, stateEstimateZ.px]
     legend: [fitted, ekf]
     x_label: "$t [s]$"
     y_label: "$x [m]$"
-  - x_axis: [fitTimestamp, timestamp]
-    y_axis: [fitZ.py, stateEstimateZ.py]
+  - x_axis: [timestamp, timestamp]
+    y_axis: [fitZOriginalLength.py, stateEstimateZ.py]
     legend: [fitted, ekf]
     x_label: "$t [s]$"
     y_label: "$y [m]$"
-  - x_axis: [fitTimestamp, timestamp]
-    y_axis: [fitZ.pz, stateEstimateZ.pz]
+  - x_axis: [timestamp, timestamp]
+    y_axis: [fitZOriginalLength.pz, stateEstimateZ.pz]
     legend: [fitted, ekf]
     x_label: "$t [s]$"
     y_label: "$z [m]$"
@@ -186,18 +186,18 @@ figures:
     # ms: 0.7
     linewidth: 0.5
   structure:
-  - x_axis: [fitTimestamp, timestamp]
-    y_axis: [fitZ.pvx, stateEstimateZ.pvx]
+  - x_axis: [timestamp, timestamp]
+    y_axis: [fitZOriginalLength.pvx, stateEstimateZ.pvx]
     legend: [fitted, ekf]
     x_label: "$t [s]$"
     y_label: "$\\dot x [m/s]$"
-  - x_axis: [fitTimestamp, timestamp]
-    y_axis: [fitZ.pvy, stateEstimateZ.pvy]
+  - x_axis: [timestamp, timestamp]
+    y_axis: [fitZOriginalLength.pvy, stateEstimateZ.pvy]
     legend: [fitted, ekf]
     x_label: "$t [s]$"
     y_label: "$\\dot y [m/s]$"
-  - x_axis: [fitTimestamp, timestamp]
-    y_axis: [fitZ.pvz, stateEstimateZ.pvz]
+  - x_axis: [timestamp, timestamp]
+    y_axis: [fitZOriginalLength.pvz, stateEstimateZ.pvz]
     legend: [fitted, ekf]
     x_label: "$t [s]$"
     y_label: "$\\dot z [m/s]$"
@@ -209,18 +209,18 @@ figures:
     # ms: 0.7
     linewidth: 0.5
   structure:
-  - x_axis: [fitTimestamp]
-    y_axis: [fitZ.pax]
+  - x_axis: [timestamp]
+    y_axis: [fitZOriginalLength.pax]
     legend: [fitted]
     x_label: "$t [s]$"
     y_label: "$\\ddot x [m/s^2]$"
-  - x_axis: [fitTimestamp]
-    y_axis: [fitZ.pay]
+  - x_axis: [timestamp]
+    y_axis: [fitZOriginalLength.pay]
     legend: [fitted]
     x_label: "$t [s]$"
     y_label: "$\\ddot y [m/s^2]$"
-  - x_axis: [fitTimestamp]
-    y_axis: [fitZ.paz]
+  - x_axis: [timestamp]
+    y_axis: [fitZOriginalLength.paz]
     legend: [fitted]
     x_label: "$t [s]$"
     y_label: "$\\ddot z [m/s^2]$"
@@ -418,17 +418,17 @@ figures:
     legend: [""]
     x_label: "$t [s]$"
     y_label: "$e_{\\dot \\psi} [°/s]$"
-# - title: Residual Thrust
-#   type: 2d subplots
-#   marker: line
-#   marker_kwargs:
-#     linewidth: 0.5
-#   structure:
-#   - x_axis: [timestamp]
-#     y_axis: [ctrlLee.thrustSI]
-#     legend: [actual]
-#     x_label: "$t [s]$"
-#     y_label: "$T [N]$"
+- title: Residual Thrust
+  type: 2d subplots
+  marker: line
+  marker_kwargs:
+    linewidth: 0.5
+  structure:
+  - x_axis: [timestamp]
+    y_axis: [residual.f]
+    legend: [""]
+    x_label: "$t [s]$"
+    y_label: "$T [N]$"
 - title: Residual Torques (XYZ)
   type: 2d subplots
   marker: line
@@ -720,6 +720,27 @@ additional_data:
     # degree:
     derivative: 1
     original_length: True
+  - source: stateEstimateZ.px
+    target: fitZOriginalLength.pax
+    type: bs
+    smoothing: 1
+    # degree:
+    derivative: 2
+    original_length: True
+  - source: stateEstimateZ.py
+    target: fitZOriginalLength.pay
+    type: bs
+    smoothing: 1
+    # degree:
+    derivative: 2
+    original_length: True
+  - source: stateEstimateZ.pz
+    target: fitZOriginalLength.paz
+    type: bs
+    smoothing: 1
+    # degree:
+    derivative: 2
+    original_length: True
   # ==================================================
   # custom data with original length respectively
   # ==================================================
@@ -743,7 +764,7 @@ additional_data:
     - error.wx
     - error.wy
     - error.wz
-    # - residual.f
+    - residual.f
     - residual.tx
     - residual.ty
     - residual.tz
