@@ -16,7 +16,7 @@ def skew(w):
 
 class ResidualsPayload():
     def __init__(self, data: dict[str, np.ndarray]) -> None:
-        self.data = data
+        self.data = data 
         self.delta = np.diff(self.data["timestamp"])
         self.delta_threshold = 0.2
         print(f"sampling time vector: {self.delta}") # in log 182: one delta is approx. 0.004s, one outlier is approx. 1.5s
@@ -38,14 +38,27 @@ class ResidualsPayload():
                                   [0.718277, 1.800197, 29.261652]])
         self.invI = np.linalg.inv(self.I)
 
-        # init required matrices
+        # init main matrices
         self.stacked_states_data                  = np.zeros((self.n, self.n_payload))
         self.stacked_inputs_data                  = np.zeros((self.n, self.n_input))
         self.stacked_states_model                 = np.zeros((self.n, self.n_payload))
         self.stacked_errors                       = np.zeros((self.n, self.n_payload))
         self.stacked_errors_uav_orientation_euler = np.zeros((self.n, 3))
         self.stacked_residuals                    = np.zeros((self.n, self.n_input))
+
+        # init useful matrices from data 
+        self.stacked_uav_orientation_euler_data   = np.zeros((self.n, 3))
+        self.stacked_uav_orientation_q_data       = np.zeros((self.n, 4)) 
+        self.stacked_uav_orientation_R_data       = np.zeros((self.n, 3, 3))
+        self.stacked_w_data                       = np.zeros((self.n, 3))
+        self.stacked_alpha_data                   = np.zeros((self.n, 3))
+        self.stacked_cp_data                      = np.zeros((self.n, 3))
+        self.stacked_cpv_data                     = np.zeros((self.n, 3)) 
+
+        # precompute useful matrices from data
+        self.compute_useful_matrices_data()
         
+        # start computations (residual computation depends on stacked states from data)
         print("===========================================")
         print("ResidualsPayload object created")
         print("Number of data points: ", self.n)
@@ -81,6 +94,45 @@ class ResidualsPayload():
         print("Computing residuals took: ", t2 - t1, " s")
         print("===========================================")
 
+    def compute_useful_matrices_data(self) -> None:
+        # stacked UAV orientation: Euler angles
+        phi   = np.radians(self.data["ctrlLee.rpyx"]) 
+        theta = np.radians(self.data["ctrlLee.rpyy"]) 
+        psi   = np.radians(self.data["ctrlLee.rpyz"]) 
+        self.stacked_uav_orientation_euler_data = np.array([phi, theta, psi]).T
+        
+        # stacked UAV orientation: quaternions
+        print("compute_useful_matrices(): converting Euler angles to quaternions...")
+        for i in range(self.n):
+            self.stacked_uav_orientation_q_data[i, :] = from_euler(phi[i], theta[i], psi[i], convention="xyz")
+        print("compute_useful_matrices(): converting Euler angles to quaternions...done")
+
+        # stacked UAV orientation: rotation matrix
+        print("compute_useful_matrices(): converting quaternions to rotation matrices...")
+        for i in range(self.n):
+            self.stacked_uav_orientation_R_data[i, :, :] = to_matrix(self.stacked_uav_orientation_q_data[i, :])
+        print("compute_useful_matrices(): converting quaternions to rotation matrices...done")
+
+        # stacked UAV angular velocity
+        self.stacked_w_data[:, 0] = np.radians(self.data["ctrlLee.omegax"])
+        self.stacked_w_data[:, 1] = np.radians(self.data["ctrlLee.omegay"])
+        self.stacked_w_data[:, 2] = np.radians(self.data["ctrlLee.omegaz"])
+        
+        # stacked UAV angular acceleration
+        self.stacked_alpha_data[:, 0] = np.radians(self.data["fitZOriginalLength.alphax"])
+        self.stacked_alpha_data[:, 1] = np.radians(self.data["fitZOriginalLength.alphay"])
+        self.stacked_alpha_data[:, 2] = np.radians(self.data["fitZOriginalLength.alphaz"])
+
+        # stacked cable unit vector
+        self.cp_data[:, 0] = (self.data["fitZOriginalLength.px"] - self.data["locSrv.x"]) / self.lc # cpx
+        self.cp_data[:, 1] = (self.data["fitZOriginalLength.py"] - self.data["locSrv.y"]) / self.lc # cpy
+        self.cp_data[:, 2] = (self.data["fitZOriginalLength.pz"] - self.data["locSrv.z"]) / self.lc # cpz
+
+        # stacked cable unit vector velocity
+        self.cpv_data[:, 0] = (self.data["fitZOriginalLength.pvx"] - self.data["stateEstimateZ.vx"]) / self.lc # cpvx
+        self.cpv_data[:, 1] = (self.data["fitZOriginalLength.pvy"] - self.data["stateEstimateZ.vy"]) / self.lc # cpvy
+        self.cpv_data[:, 2] = (self.data["fitZOriginalLength.pvz"] - self.data["stateEstimateZ.vz"]) / self.lc # cpvz
+
     def construct_stacked_states_data(self) -> None:
         # (1) p - payload position
         self.stacked_states_data[:, 0] = self.data["fitZOriginalLength.px"]
@@ -93,27 +145,13 @@ class ResidualsPayload():
         self.stacked_states_data[:, 5] = self.data["fitZOriginalLength.pvz"]
 
         # (3) cp - cable unit vector (from the uav to the payload)
-        self.stacked_states_data[:, 6] = (self.data["fitZOriginalLength.px"] - self.data["locSrv.x"]) / self.lc # cpx
-        self.stacked_states_data[:, 7] = (self.data["fitZOriginalLength.py"] - self.data["locSrv.y"]) / self.lc # cpy
-        self.stacked_states_data[:, 8] = (self.data["fitZOriginalLength.pz"] - self.data["locSrv.z"]) / self.lc # cpz
+        self.stacked_states_data[:, 6:9] = self.stacked_cp_data
 
         # (4) pw - payload angular velocity (pw = cp @ cpv)
-        cv = np.zeros((self.n, 3))
-        cv[:, 0] = (self.data["fitZOriginalLength.pvx"] - self.data["stateEstimateZ.vx"]) / self.lc # cpvx
-        cv[:, 1] = (self.data["fitZOriginalLength.pvy"] - self.data["stateEstimateZ.vy"]) / self.lc # cpvy
-        cv[:, 2] = (self.data["fitZOriginalLength.pvz"] - self.data["stateEstimateZ.vz"]) / self.lc # cpvz
-
-        self.stacked_states_data[:, 9:12] = np.cross(self.stacked_states_data[:, 6:9], cv) # pwx, pwy, pwz [rad/s]
+        self.stacked_states_data[:, 9:12] = np.cross(self.stacked_states_data[:, 6:9], self.cpv_data) # pwx, pwy, pwz [rad/s]
 
         # (5) rpy - uav orientation
-        phi =   np.radians(self.data["ctrlLee.rpyx"]) 
-        theta = np.radians(self.data["ctrlLee.rpyy"]) 
-        psi =   np.radians(self.data["ctrlLee.rpyz"]) 
-
-        print("construct_stacked_states_data(): converting Euler angles to quaternions...")
-        for i in range(self.n):
-            self.stacked_states_data[i, 12:16] = from_euler(phi[i], theta[i], psi[i], convention="xyz")
-        print("construct_stacked_states_data(): converting Euler angles to quaternions...done")
+        self.stacked_states_data[:, 12:16] = self.stacked_uav_quats_data
 
         # (6) w - uav angular velocity
         self.stacked_states_data[:, 16] = np.radians(self.data["ctrlLee.omegax"])
@@ -139,6 +177,10 @@ class ResidualsPayload():
             self.stacked_states_model[i, :] = self.stacked_states_data[i-1, :] + self.step(i) * self.delta[i-1]
 
     def step(self, index: int) -> np.ndarray:
+        # ========================================================================================
+        # author: Khaled Wahba
+        # source: uav.py -> https://github.com/IMRCLab/col-trans/blob/main/sim/uavDy/uav.py
+        # ========================================================================================
         curr_posl = self.stacked_states_data[index - 1, 0:3]   
         curr_vl   = self.stacked_states_data[index - 1, 3:6]   
         curr_p    = self.stacked_states_data[index - 1, 6:9]   
@@ -208,25 +250,15 @@ class ResidualsPayload():
         #                                                                 angle_normalization(y)])
 
     def compute_residuals(self) -> None:
-        stacked_w_x = np.radians(self.data["ctrlLee.omegax"])
-        stacked_w_y = np.radians(self.data["ctrlLee.omegay"])
-        stacked_w_z = np.radians(self.data["ctrlLee.omegaz"])
-        stacked_w = np.array([stacked_w_x, stacked_w_y, stacked_w_z]).T
+        self.compute_residual_thrust()
+        self.compute_residual_torques()
 
-        stacked_alpha_x = np.radians(self.data["fitZOriginalLength.alphax"])
-        stacked_alpha_y = np.radians(self.data["fitZOriginalLength.alphay"])
-        stacked_alpha_z = np.radians(self.data["fitZOriginalLength.alphaz"])
-        stacked_alpha = np.array([stacked_alpha_x, stacked_alpha_y, stacked_alpha_z]).T
-
-        self.compute_residual_thrust(stacked_w, stacked_alpha)
-        self.compute_residual_torques(stacked_w, stacked_alpha)
-
-    def compute_residual_thrust(self, stacked_w: np.ndarray, stacked_alpha: np.ndarray) -> None:
+    def compute_residual_thrust(self) -> None:
         pass
 
-    def compute_residual_torques(self, stacked_w: np.ndarray, stacked_alpha: np.ndarray) -> None:
-        m = np.matmul(self.I, stacked_alpha[:, :, None])[:, :, 0]
-        c = np.cross(stacked_w, np.matmul(self.I, stacked_w[:, :, None])[:, :, 0])
+    def compute_residual_torques(self) -> None:
+        m = np.matmul(self.I, self.stacked_alpha_data[:, :, None])[:, :, 0]
+        c = np.cross(self.stacked_w_data, np.matmul(self.I, self.stacked_w_data[:, :, None])[:, :, 0])
         self.stacked_residuals[:, 1:4] = m + c - self.stacked_inputs_data[:, 1:4]
 
     def get_error_payload_position_x(self) -> np.ndarray:
