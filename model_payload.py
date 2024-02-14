@@ -68,13 +68,17 @@ class ResidualsPayload():
         t2 = time.perf_counter()
         print("Constructing stacked states from model took: ", t2 - t1, " s")
         print("===========================================")
-
         print("Computing errors...")
         t1 = time.perf_counter()
         self.compute_errors()
         t2 = time.perf_counter()
         print("Computing errors took: ", t2 - t1, " s")
         print("===========================================")
+        print("Computing residuals...")
+        t1 = time.perf_counter()
+        self.compute_residuals()
+        t2 = time.perf_counter()
+        print("Computing residuals took: ", t2 - t1, " s")
         print("===========================================")
 
     def construct_stacked_states_data(self) -> None:
@@ -204,8 +208,27 @@ class ResidualsPayload():
         #                                                                 angle_normalization(y)])
 
     def compute_residuals(self) -> None:
+        self.compute_residual_thrust()
+        self.compute_residual_torques()
+
+    def compute_residual_thrust(self) -> None:
         pass
-    
+
+    def compute_residual_torques(self) -> None:
+        stacked_w_x = np.radians(self.data["ctrlLee.omegax"])
+        stacked_w_y = np.radians(self.data["ctrlLee.omegay"])
+        stacked_w_z = np.radians(self.data["ctrlLee.omegaz"])
+        stacked_w = np.array([stacked_w_x, stacked_w_y, stacked_w_z]).T
+
+        stacked_alpha_x = np.radians(self.data["fitZOriginalLength.alphax"])
+        stacked_alpha_y = np.radians(self.data["fitZOriginalLength.alphay"])
+        stacked_alpha_z = np.radians(self.data["fitZOriginalLength.alphaz"])
+        stacked_alpha = np.array([stacked_alpha_x, stacked_alpha_y, stacked_alpha_z]).T
+
+        m = np.matmul(self.I, stacked_alpha[:, :, None])[:, :, 0]
+        c = np.cross(stacked_w, np.matmul(self.I, stacked_w[:, :, None])[:, :, 0])
+        self.stacked_residuals[:, 1:4] = m + c  # - self.stacked_inputs_data[:, 1:4]
+
     def get_error_payload_position_x(self) -> np.ndarray:
         return self.stacked_errors[:, 0]
     

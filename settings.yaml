@@ -144,17 +144,17 @@ figures:
     y_axis: [fitZOriginalLength.alphax]
     legend: [fitted]
     x_label: "$t [s]$"
-    y_label: "$\\dot \\phi [°/s^2]$"
+    y_label: "$\\ddot \\phi [°/s^2]$"
   - x_axis: [timestamp]
     y_axis: [fitZOriginalLength.alphay]
     legend: [fitted]
     x_label: "$t [s]$"
-    y_label: "$\\dot \\theta [°/s^2]$"
+    y_label: "$\\ddot \\theta [°/s^2]$"
   - x_axis: [timestamp]
     y_axis: [fitZOriginalLength.alphaz]
     legend: [fitted]
     x_label: "$t [s]$"
-    y_label: "$\\dot \\psi [°/s^2]$"
+    y_label: "$\\ddot \\psi [°/s^2]$"
 - title: Payload Positions
   type: 2d subplots
   marker: line
@@ -256,7 +256,7 @@ figures:
     legend: [actual]
     x_label: "$t [s]$"
     y_label: "$\\tau_z [Nm]$"
-- title: Trajectory
+- title: 3D Trajectory
   type: 3d
   marker: line
   marker_kwargs:
@@ -273,7 +273,7 @@ figures:
     - ctrltargetZ.y
     - ctrltargetZ.z
     - desired
-- title: Trajectory
+- title: 2D Trajectory
   type: 2d subplots
   marker: line
   marker_kwargs:
@@ -418,6 +418,38 @@ figures:
     legend: [""]
     x_label: "$t [s]$"
     y_label: "$e_{\\dot \\psi} [°/s]$"
+# - title: Residual Thrust
+#   type: 2d subplots
+#   marker: line
+#   marker_kwargs:
+#     linewidth: 0.5
+#   structure:
+#   - x_axis: [timestamp]
+#     y_axis: [ctrlLee.thrustSI]
+#     legend: [actual]
+#     x_label: "$t [s]$"
+#     y_label: "$T [N]$"
+- title: Residual Torques (XYZ)
+  type: 2d subplots
+  marker: line
+  marker_kwargs:
+    linewidth: 0.5
+  structure:
+  - x_axis: [timestamp]
+    y_axis: [residual.tx]
+    legend: [""]
+    x_label: "$t [s]$"
+    y_label: "$\\tau_x [Nm]$"
+  - x_axis: [timestamp]
+    y_axis: [residual.ty]
+    legend: [""]
+    x_label: "$t [s]$"
+    y_label: "$\\tau_y [Nm]$"
+  - x_axis: [timestamp]
+    y_axis: [residual.tz]
+    legend: [""]
+    x_label: "$t [s]$"
+    y_label: "$\\tau_z [Nm]$"
 
 # unit settings
 convert_units:
@@ -712,7 +744,7 @@ additional_data:
     - error.wy
     - error.wz
     # - residual.f
-    # - residual.tx
-    # - residual.ty
-    # - residual.tz
+    - residual.tx
+    - residual.ty
+    - residual.tz
   # ==================================================
