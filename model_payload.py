@@ -227,7 +227,7 @@ class ResidualsPayload():
 
         m = np.matmul(self.I, stacked_alpha[:, :, None])[:, :, 0]
         c = np.cross(stacked_w, np.matmul(self.I, stacked_w[:, :, None])[:, :, 0])
-        self.stacked_residuals[:, 1:4] = m + c  # - self.stacked_inputs_data[:, 1:4]
+        self.stacked_residuals[:, 1:4] = m + c - self.stacked_inputs_data[:, 1:4]
 
     def get_error_payload_position_x(self) -> np.ndarray:
         return self.stacked_errors[:, 0]
