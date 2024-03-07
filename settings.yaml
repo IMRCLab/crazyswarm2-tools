@@ -418,17 +418,27 @@ figures:
     legend: [""]
     x_label: "$t [s]$"
     y_label: "$e_{\\dot \\psi} [°/s]$"
-- title: Residual Thrust
+- title: Residual Forces
   type: 2d subplots
   marker: line
   marker_kwargs:
     linewidth: 0.5
   structure:
   - x_axis: [timestamp]
-    y_axis: [residual.f]
+    y_axis: [residual.fx]
     legend: [""]
     x_label: "$t [s]$"
-    y_label: "$T [N]$"
+    y_label: "$F_{a_x} [N]$"
+  - x_axis: [timestamp]
+    y_axis: [residual.fy]
+    legend: [""]
+    x_label: "$t [s]$"
+    y_label: "$F_{a_y} [N]$"
+  - x_axis: [timestamp]
+    y_axis: [residual.fz]
+    legend: [""]
+    x_label: "$t [s]$"
+    y_label: "$F_{a_z} [N]$"
 - title: Residual Torques (XYZ)
   type: 2d subplots
   marker: line
@@ -439,17 +449,17 @@ figures:
     y_axis: [residual.tx]
     legend: [""]
     x_label: "$t [s]$"
-    y_label: "$\\tau_x [Nm]$"
+    y_label: "$\\tau_{a_x} [Nm]$"
   - x_axis: [timestamp]
     y_axis: [residual.ty]
     legend: [""]
     x_label: "$t [s]$"
-    y_label: "$\\tau_y [Nm]$"
+    y_label: "$\\tau_{a_y} [Nm]$"
   - x_axis: [timestamp]
     y_axis: [residual.tz]
     legend: [""]
     x_label: "$t [s]$"
-    y_label: "$\\tau_z [Nm]$"
+    y_label: "$\\tau_{a_z} [Nm]$"
 
 # unit settings
 convert_units:
@@ -764,7 +774,9 @@ additional_data:
     - error.wx
     - error.wy
     - error.wz
-    - residual.f
+    - residual.fx
+    - residual.fy
+    - residual.fz
     - residual.tx
     - residual.ty
     - residual.tz

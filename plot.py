@@ -143,7 +143,7 @@ def add_data(data, settings):
 def create_figures(data_usd, settings, log_str):
     debug_all = False
     debug = False
-    # debug_figure_number = 20 # Residual Torques
+    debug_figure_number = 20 # Residual Torques
     # debug_figure_number = 4 # UAV angles
     # debug_figure_number = 13 # payload position error
     # debug_figure_number = 6 # payload positions

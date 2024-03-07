@@ -127,8 +127,12 @@ class DataHelper:
                 custom_data.append(res_payload.get_error_uav_angular_velocity_y())
             elif target == "error.wz":
                 custom_data.append(res_payload.get_error_uav_angular_velocity_z())
-            elif target == "residual.f":
-                custom_data.append(res_payload.get_residual_force())
+            elif target == "residual.fx":
+                custom_data.append(res_payload.get_residual_force_x())
+            elif target == "residual.fy":
+                custom_data.append(res_payload.get_residual_force_y())
+            elif target == "residual.fz":
+                custom_data.append(res_payload.get_residual_force_z())
             elif target == "residual.tx":
                 custom_data.append(res_payload.get_residual_torque_x())
             elif target == "residual.ty":
