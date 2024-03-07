@@ -17,63 +17,6 @@ import numpy as np
 import data_helper
 
 
-def compute_tracking_error(data, settings):
-    # extract the data for the position
-    actual_x = data[settings["event_name"]]["stateEstimateZ.x"]
-    actual_y = data[settings["event_name"]]["stateEstimateZ.y"]
-    actual_z = data[settings["event_name"]]["stateEstimateZ.z"]
-    desired_x = data[settings["event_name"]]["ctrltargetZ.x"]
-    desired_y = data[settings["event_name"]]["ctrltargetZ.y"]
-    desired_z = data[settings["event_name"]]["ctrltargetZ.z"]
-        
-    # compute the L2 vector for the position
-    traj_actual = np.array([actual_x, actual_y, actual_z])
-    traj_desired = np.array([desired_x, desired_y, desired_z])
-    traj_delta = traj_actual - traj_desired
-    traj_sq = traj_delta.T@traj_delta
-    l2_vec_position = np.sqrt(np.diag(traj_sq))
-
-    # extract the data for the roll
-    actual_roll = data[settings["event_name"]]["ctrlLee.rpyx"]
-    desired_roll = data[settings["event_name"]]["ctrlLee.rpydx"]
-
-    # compute the L2 vector for the position
-    angle_actual = np.array([actual_roll])
-    # print(angle_actual.shape)
-    angle_desired = np.array([desired_roll])
-    angle_delta = angle_actual - angle_desired
-    angle_sq = angle_delta.T@angle_delta
-    l2_vec_angle = np.sqrt(np.diag(angle_sq))
-
-    e_dict = {}
-    for error in settings["errors"]:
-        e_dict[error] = -1
-
-        if error == "L2 integral error":
-            e_position = 0
-            e_angle = 0
-            for i in range(1, len(l2_vec_position)):
-                t_delta = data[settings["event_name"]]['timestamp'][i] - data[settings["event_name"]]['timestamp'][i-1]
-                l2_delta_position = l2_vec_position[i] - l2_vec_position[i-1]
-                l2_delta_angle = l2_vec_angle[i] - l2_vec_angle[i-1]
-                e_position += l2_delta_position*t_delta
-                e_angle += l2_delta_angle*t_delta
-
-            e_dict[error] = f"{np.round(e_position*1e3, 3)}mm; {np.round(e_angle, 3)}deg"
-                
-        elif error == "L2 mean":
-            e_dict[error] = f"{np.round(np.mean(l2_vec_position)*1e3, 3)}mm; {np.round(np.mean(l2_vec_angle), 3)}deg"
-        elif error == "L2 std":
-            e_dict[error] = f"{np.round(np.std(l2_vec_position)*1e3, 3)}mm; {np.round(np.std(l2_vec_angle), 3)}deg"
-        elif error == "L2 max":
-            timepoint = (data[settings["event_name"]]['timestamp'][np.argmax(l2_vec_position)] - data[settings["event_name"]]['timestamp'][0]) / 1000
-            e_dict[error] = f"{np.round(np.max(l2_vec_position)*1e3)}mm@{np.round(timepoint, 3)}s"
-
-            timepoint = (data[settings["event_name"]]['timestamp'][np.argmax(l2_vec_angle)] - data[settings["event_name"]]['timestamp'][0]) / 1000
-            e_dict[error] += f"; {np.round(np.max(l2_vec_angle))}deg@{np.round(timepoint, 3)}s"
-
-    return e_dict
-
 def file_guard(pdf_path):
     msg = None
     if os.path.exists(pdf_path):
@@ -118,7 +61,7 @@ def process_data(data, settings):
             data[event][key] = value[t <= end_time]
 
     # add additional data to the data dictionary
-    add_data(data, settings)
+    # add_data(data, settings)
 
     # print(data[event].keys())
     # print(data[event].items())
@@ -143,7 +86,7 @@ def add_data(data, settings):
 def create_figures(data_usd, settings, log_str):
     debug_all = False
     debug = False
-    # debug_figure_number = 20 # Residual Torques
+    debug_figure_number = 20 # Residual Torques
     # debug_figure_number = 4 # UAV angles
     # debug_figure_number = 13 # payload position error
     # debug_figure_number = 6 # payload positions
@@ -184,27 +127,28 @@ def create_figures(data_usd, settings, log_str):
     for key, value in info.items():
         title_text_parameters += f"    {key}: {value}\n"
 
-    # create the results section
-    title_text_results = f"Results:\n"
-    e_dict = compute_tracking_error(data_processed, settings)
-    for error in settings["errors"]:
-        title_text_results += f"    {error}: {e_dict[error]}\n"
-
-    text = f"%% Lee controller tuning %%\n"
-    title_text = text + "\n" + title_text_settings + "\n" + title_text_parameters + "\n" + title_text_results
+    text = f"%% Report %%\n"
+    title_text = text + "\n" + title_text_settings + "\n" + title_text_parameters + "\n" # + title_text_results
     fig = plt.figure(figsize=(5, 8))
     fig.text(0.1, 0.1, title_text, size=11)
     pdf_pages.savefig(fig)
 
-    # create data plots
+    # create data plots for each event
     figures_max = settings.get("figures_max", None)  # set to None to plot all figures
     figure_count = 0
     for k, (event, data) in enumerate(data_processed.items()):
         if event in settings["event_name"]:
             print("processing event: {} ({})".format(event, k))
 
+            # create a title text for each event
+            t = f"%% Event {k}: {event} %%\n"
+            fig = plt.figure(figsize=(5, 5))
+            fig.text(0.1, 0.1, title_text, size=11)
+            pdf_pages.savefig(fig)
+
             # create a new figure for each value in the data dictionary
-            for figure_info in settings["figures"]:
+            figures_key = f"figures_{event}"
+            for figure_info in settings[figures_key]:
                 if figures_max is not None and figure_count >= figures_max:
                     break
 
@@ -326,9 +270,10 @@ if __name__ == "__main__":
     if mode == "manual single":
         # get the log number from the user
         # log_num = input("Enter the logging number: ")
+        # TODO: enter the name so that log_str is the filename of the downloaded log
         log_num = 182
-        print(f"Processing log {log_num}")
-        log_str = f"log{log_num}"
+        print(f"Processing cf231_{log_num}")
+        log_str = f"cf231_{log_num}"
 
         # decode binary log data
         path = os.path.join(settings["data_dir"], log_str)

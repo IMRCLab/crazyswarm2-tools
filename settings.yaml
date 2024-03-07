@@ -3,9 +3,11 @@
 data_dir: logs
 # data_file: log129
 info_dir: info
-event_name: fixedFrequency
-start_time: 2   # s (w.r.t log start time)
-end_time: 15    # s (w.r.t log start time)
+event_name: 
+- fixedFrequency
+- estPosition
+start_time:    # s (w.r.t log start time)
+end_time:     # s (w.r.t log start time)
 output_dir: reports
 figures_max:
 skip_data:
@@ -18,244 +20,29 @@ title_settings:
 - start_time
 - end_time
 
-# results settings
-errors: 
-- "L2 integral error"
-- "L2 mean"
-- "L2 std"
-- "L2 max"
-
-# figure settings
-figures:
+# figure settings for event fixedFrequency
+figures_fixedFrequency:
 - title: UAV Positions 
   type: 2d subplots
   marker: line
   marker_kwargs:
     linewidth: 0.5
   structure:
-  - x_axis: [timestamp, timestamp, timestamp]
-    y_axis: [locSrv.x, stateEstimateZ.x, ctrltargetZ.x]
-    legend: [mocap, ekf, desired]
+  - x_axis: [timestamp]
+    y_axis: [stateEstimate.x]
+    legend: [ekf]
     x_label: "$t [s]$"
     y_label: "$x [m]$"
-  - x_axis: [timestamp, timestamp, timestamp]
-    y_axis: [locSrv.y, stateEstimateZ.y, ctrltargetZ.y]
-    legend: [mocap, ekf, desired]
+  - x_axis: [timestamp]
+    y_axis: [stateEstimateZ.y]
+    legend: [ekf]
     x_label: "$t [s]$"
     y_label: "$y [m]$"
-  - x_axis: [timestamp, timestamp, timestamp]
-    y_axis: [locSrv.z, stateEstimateZ.z, ctrltargetZ.z]
-    legend: [mocap, ekf, desired]
+  - x_axis: [timestamp]
+    y_axis: [stateEstimate.z]
+    legend: [ekf]
     x_label: "$t [s]$"
     y_label: "$z [m]$"
-- title: UAV Translational Velocities
-  type: 2d subplots
-  marker: line
-  marker_kwargs:
-    linewidth: 0.5
-  structure:
-  - x_axis: [timestamp, timestamp]
-    y_axis: [stateEstimateZ.vx, ctrltargetZ.vx]
-    legend: [ekf, desired]
-    x_label: "$t [s]$"
-    y_label: "$\\dot x [m/s]$"
-  - x_axis: [timestamp, timestamp]
-    y_axis: [stateEstimateZ.vy, ctrltargetZ.vy]
-    legend: [ekf, desired]
-    x_label: "$t [s]$"
-    y_label: "$\\dot y [m/s]$"
-  - x_axis: [timestamp, timestamp]
-    y_axis: [stateEstimateZ.vz, ctrltargetZ.vz]
-    legend: [ekf, desired]
-    x_label: "$t [s]$"
-    y_label: "$\\dot z [m/s]$"
-- title: UAV Translational Accelerations
-  type: 2d subplots
-  marker: line
-  marker_kwargs:
-    linewidth: 0.5
-  structure:
-  - x_axis: [timestamp]
-    y_axis: [acc.x]
-    legend: [measured]
-    x_label: "$t [s]$"
-    y_label: "$\\ddot x [m/s^2]$"
-  - x_axis: [timestamp]
-    y_axis: [acc.y]
-    legend: [measured]
-    x_label: "$t [s]$"
-    y_label: "$\\ddot y [m/s^2]$"
-  - x_axis: [timestamp]
-    y_axis: [acc.z]
-    legend: [measured]
-    x_label: "$t [s]$"
-    y_label: "$\\ddot z [m/s^2]$"
-- title: UAV Angles (XYZ)
-  type: 2d subplots
-  marker: line
-  marker_kwargs:
-    linewidth: 0.5
-  structure:
-  - x_axis: [timestamp, timestamp, timestamp]
-    y_axis: [fitZOriginalLength.rpyx, ctrlLee.rpyx, ctrlLee.rpydx]
-    legend: [fitted, ekf, desired]
-    x_label: "$t [s]$"
-    y_label: "$\\phi [°]$"
-  - x_axis: [timestamp, timestamp, timestamp]
-    y_axis: [fitZOriginalLength.rpyy, ctrlLee.rpyy, ctrlLee.rpydy]
-    legend: [fitted, ekf, desired]
-    x_label: "$t [s]$"
-    y_label: "$\\theta [°]$"
-  - x_axis: [timestamp, timestamp, timestamp]
-    y_axis: [fitZOriginalLength.rpyz, ctrlLee.rpyz, ctrlLee.rpydz]
-    legend: [fitted, ekf, desired]
-    x_label: "$t [s]$"
-    y_label: "$\\psi [°]$"
-- title: UAV Angular Velocities (XYZ)
-  type: 2d subplots
-  marker: line
-  marker_kwargs:
-    linewidth: 0.5
-  structure:
-  - x_axis: [timestamp, timestamp, timestamp]
-    y_axis: [fitZOriginalLength.omegax, ctrlLee.omegax, ctrlLee.omegarx]
-    legend: [fitted, ekf, desired]
-    x_label: "$t [s]$"
-    y_label: "$\\dot \\phi [°/s]$"
-  - x_axis: [timestamp, timestamp, timestamp]
-    y_axis: [fitZOriginalLength.omegay, ctrlLee.omegay, ctrlLee.omegary]
-    legend: [fitted, ekf, desired]
-    x_label: "$t [s]$"
-    y_label: "$\\dot \\theta [°/s]$"
-  - x_axis: [timestamp, timestamp, timestamp]
-    y_axis: [fitZOriginalLength.omegaz, ctrlLee.omegaz, ctrlLee.omegarz]
-    legend: [fitted, ekf, desired]
-    x_label: "$t [s]$"
-    y_label: "$\\dot \\psi [°/s]$"
-- title: UAV Angular Accelerations (XYZ)
-  type: 2d subplots
-  marker: line
-  marker_kwargs:
-    # marker: o
-    # ms: 0.7
-    linewidth: 0.5
-  structure:
-  - x_axis: [timestamp]
-    y_axis: [fitZOriginalLength.alphax]
-    legend: [fitted]
-    x_label: "$t [s]$"
-    y_label: "$\\ddot \\phi [°/s^2]$"
-  - x_axis: [timestamp]
-    y_axis: [fitZOriginalLength.alphay]
-    legend: [fitted]
-    x_label: "$t [s]$"
-    y_label: "$\\ddot \\theta [°/s^2]$"
-  - x_axis: [timestamp]
-    y_axis: [fitZOriginalLength.alphaz]
-    legend: [fitted]
-    x_label: "$t [s]$"
-    y_label: "$\\ddot \\psi [°/s^2]$"
-- title: Payload Positions
-  type: 2d subplots
-  marker: line
-  marker_kwargs:
-    # marker: o
-    # ms: 0.7
-    linewidth: 0.5
-  structure:
-  - x_axis: [timestamp, timestamp]
-    y_axis: [fitZOriginalLength.px, stateEstimateZ.px]
-    legend: [fitted, ekf]
-    x_label: "$t [s]$"
-    y_label: "$x [m]$"
-  - x_axis: [timestamp, timestamp]
-    y_axis: [fitZOriginalLength.py, stateEstimateZ.py]
-    legend: [fitted, ekf]
-    x_label: "$t [s]$"
-    y_label: "$y [m]$"
-  - x_axis: [timestamp, timestamp]
-    y_axis: [fitZOriginalLength.pz, stateEstimateZ.pz]
-    legend: [fitted, ekf]
-    x_label: "$t [s]$"
-    y_label: "$z [m]$"
-- title: Payload Translational Velocities
-  type: 2d subplots
-  marker: line
-  marker_kwargs:
-    # marker: o
-    # ms: 0.7
-    linewidth: 0.5
-  structure:
-  - x_axis: [timestamp, timestamp]
-    y_axis: [fitZOriginalLength.pvx, stateEstimateZ.pvx]
-    legend: [fitted, ekf]
-    x_label: "$t [s]$"
-    y_label: "$\\dot x [m/s]$"
-  - x_axis: [timestamp, timestamp]
-    y_axis: [fitZOriginalLength.pvy, stateEstimateZ.pvy]
-    legend: [fitted, ekf]
-    x_label: "$t [s]$"
-    y_label: "$\\dot y [m/s]$"
-  - x_axis: [timestamp, timestamp]
-    y_axis: [fitZOriginalLength.pvz, stateEstimateZ.pvz]
-    legend: [fitted, ekf]
-    x_label: "$t [s]$"
-    y_label: "$\\dot z [m/s]$"
-- title: Payload Translational Accelerations
-  type: 2d subplots
-  marker: line
-  marker_kwargs:
-    # marker: o
-    # ms: 0.7
-    linewidth: 0.5
-  structure:
-  - x_axis: [timestamp]
-    y_axis: [fitZOriginalLength.pax]
-    legend: [fitted]
-    x_label: "$t [s]$"
-    y_label: "$\\ddot x [m/s^2]$"
-  - x_axis: [timestamp]
-    y_axis: [fitZOriginalLength.pay]
-    legend: [fitted]
-    x_label: "$t [s]$"
-    y_label: "$\\ddot y [m/s^2]$"
-  - x_axis: [timestamp]
-    y_axis: [fitZOriginalLength.paz]
-    legend: [fitted]
-    x_label: "$t [s]$"
-    y_label: "$\\ddot z [m/s^2]$"
-- title: Thrust
-  type: 2d subplots
-  marker: line
-  marker_kwargs:
-    linewidth: 0.5
-  structure:
-  - x_axis: [timestamp]
-    y_axis: [ctrlLee.thrustSI]
-    legend: [actual]
-    x_label: "$t [s]$"
-    y_label: "$T [N]$"
-- title: Torques (XYZ)
-  type: 2d subplots
-  marker: line
-  marker_kwargs:
-    linewidth: 0.5
-  structure:
-  - x_axis: [timestamp]
-    y_axis: [ctrlLee.torquex]
-    legend: [actual]
-    x_label: "$t [s]$"
-    y_label: "$\\tau_x [Nm]$"
-  - x_axis: [timestamp]
-    y_axis: [ctrlLee.torquey]
-    legend: [actual]
-    x_label: "$t [s]$"
-    y_label: "$\\tau_y [Nm]$"
-  - x_axis: [timestamp]
-    y_axis: [ctrlLee.torquez]
-    legend: [actual]
-    x_label: "$t [s]$"
-    y_label: "$\\tau_z [Nm]$"
 - title: 3D Trajectory
   type: 3d
   marker: line
@@ -265,191 +52,70 @@ figures:
   y_label: $y [m]$
   z_label: $z [m]$
   structure:
-  - - stateEstimateZ.x
-    - stateEstimateZ.y
-    - stateEstimateZ.z
+  - - stateEstimate.x
+    - stateEstimate.y
+    - stateEstimate.z
     - ekf
-  - - ctrltargetZ.x
-    - ctrltargetZ.y
-    - ctrltargetZ.z
-    - desired
 - title: 2D Trajectory
   type: 2d subplots
   marker: line
   marker_kwargs:
     linewidth: 0.5
   structure:
-  - x_axis: [stateEstimateZ.x, ctrltargetZ.x]
-    y_axis: [stateEstimateZ.y, ctrltargetZ.y]
-    legend: [ekf, desired]
+  - x_axis: [stateEstimate.x]
+    y_axis: [stateEstimate.y]
+    legend: [ekf]
     x_label: "$x [m]$"
     y_label: "$y [m]$"
-- title: Payload Position Errors
-  type: 2d subplots
-  marker: line
-  marker_kwargs:
-    # marker: o
-    # ms: 0.7
-    linewidth: 0.5
-  structure:
-  - x_axis: [timestamp]
-    y_axis: [error.px]
-    legend: [""]
-    x_label: "$t [s]$"
-    y_label: "$e_x [m]$"
-  - x_axis: [timestamp]
-    y_axis: [error.py]
-    legend: [""]
-    x_label: "$t [s]$"
-    y_label: "$e_y [m]$"
-  - x_axis: [timestamp]
-    y_axis: [error.pz]
-    legend: [""]
-    x_label: "$t [s]$"
-    y_label: "$e_z [m]$"
-- title: Payload Velocity Errors
-  type: 2d subplots
-  marker: line
-  marker_kwargs:
-    # marker: o
-    # ms: 0.7
-    linewidth: 0.5
-  structure:
-  - x_axis: [timestamp]
-    y_axis: [error.pvx]
-    legend: [""]
-    x_label: "$t [s]$"
-    y_label: "$e_{\\dot x} [m/s]$"
-  - x_axis: [timestamp]
-    y_axis: [error.pvy]
-    legend: [""]
-    x_label: "$t [s]$"
-    y_label: "$e_{\\dot y} [m/s]$"
-  - x_axis: [timestamp]
-    y_axis: [error.pvz]
-    legend: [""]
-    x_label: "$t [s]$"
-    y_label: "$e_{\\dot z} [m/s]$"
-- title: Cable Unit Vector Error
-  type: 2d subplots
-  marker: line
-  marker_kwargs:
-    # marker: o
-    # ms: 0.7
-    linewidth: 0.5
-  structure:
-  - x_axis: [timestamp]
-    y_axis: [error.cpx]
-    legend: [""]
-    x_label: "$t [s]$"
-    y_label: "$e_{cp_x} [m]$"
-  - x_axis: [timestamp]
-    y_axis: [error.cpy]
-    legend: [""]
-    x_label: "$t [s]$"
-    y_label: "$e_{cp_y} [m]$"
-  - x_axis: [timestamp]
-    y_axis: [error.cpz]
-    legend: [""]
-    x_label: "$t [s]$"
-    y_label: "$e_{cp_z} [m]$"
-- title: Payload Angular Velocity Errors (XYZ)
-  type: 2d subplots
-  marker: line
-  marker_kwargs:
-    # marker: o
-    # ms: 0.7
-    linewidth: 0.5
-  structure:
-  - x_axis: [timestamp]
-    y_axis: [error.pwx]
-    legend: [""]
-    x_label: "$t [s]$"
-    y_label: "$e_{pw_x} [°/s]$"
-  - x_axis: [timestamp]
-    y_axis: [error.pwy]
-    legend: [""]
-    x_label: "$t [s]$"
-    y_label: "$e_{pw_y} [°/s]$"
-  - x_axis: [timestamp]
-    y_axis: [error.pwz]
-    legend: [""]
-    x_label: "$t [s]$"
-    y_label: "$e_{pw_z} [°/s]$"
-- title: UAV Angle Errors (XYZ)
+
+# figure settings for event estPosition
+figures_estPosition:
+- title: UAV Positions 
   type: 2d subplots
   marker: line
   marker_kwargs:
     linewidth: 0.5
   structure:
   - x_axis: [timestamp]
-    y_axis: [error.rpyx]
-    legend: [""]
+    y_axis: [locSrv.x]
+    legend: [mocap]
     x_label: "$t [s]$"
-    y_label: "$e_{\\phi} [°]$"
+    y_label: "$x [m]$"
   - x_axis: [timestamp]
-    y_axis: [error.rpyy]
-    legend: [""]
+    y_axis: [locSrv.y]
+    legend: [mocap]
     x_label: "$t [s]$"
-    y_label: "$e_{\\theta} [°]$"
+    y_label: "$y [m]$"
   - x_axis: [timestamp]
-    y_axis: [error.rpyz]
-    legend: [""]
+    y_axis: [locSrv.z]
+    legend: [mocap]
     x_label: "$t [s]$"
-    y_label: "$e_{\\psi} [°]$"
-- title: UAV Angular Velocity Errors (XYZ)
+    y_label: "$z [m]$"
+- title: 3D Trajectory
+  type: 3d
+  marker: line
+  marker_kwargs:
+    linewidth: 0.5
+  x_label: $x [m]$
+  y_label: $y [m]$
+  z_label: $z [m]$
+  structure:
+  - - locSrv.x
+    - locSrv.y
+    - locSrv.z
+    - mocap
+- title: 2D Trajectory
   type: 2d subplots
   marker: line
   marker_kwargs:
     linewidth: 0.5
   structure:
-  - x_axis: [timestamp]
-    y_axis: [error.wx]
-    legend: [""]
-    x_label: "$t [s]$"
-    y_label: "$e_{\\dot \\phi} [°/s]$"
-  - x_axis: [timestamp]
-    y_axis: [error.wy]
-    legend: [""]
-    x_label: "$t [s]$"
-    y_label: "$e_{\\dot \\theta} [°/s]$"
-  - x_axis: [timestamp]
-    y_axis: [error.wz]
-    legend: [""]
-    x_label: "$t [s]$"
-    y_label: "$e_{\\dot \\psi} [°/s]$"
-- title: Residual Thrust
-  type: 2d subplots
-  marker: line
-  marker_kwargs:
-    linewidth: 0.5
-  structure:
-  - x_axis: [timestamp]
-    y_axis: [residual.f]
-    legend: [""]
-    x_label: "$t [s]$"
-    y_label: "$T [N]$"
-- title: Residual Torques (XYZ)
-  type: 2d subplots
-  marker: line
-  marker_kwargs:
-    linewidth: 0.5
-  structure:
-  - x_axis: [timestamp]
-    y_axis: [residual.tx]
-    legend: [""]
-    x_label: "$t [s]$"
-    y_label: "$\\tau_x [Nm]$"
-  - x_axis: [timestamp]
-    y_axis: [residual.ty]
-    legend: [""]
-    x_label: "$t [s]$"
-    y_label: "$\\tau_y [Nm]$"
-  - x_axis: [timestamp]
-    y_axis: [residual.tz]
-    legend: [""]
-    x_label: "$t [s]$"
-    y_label: "$\\tau_z [Nm]$"
+  - x_axis: [locSrv.x]
+    y_axis: [locSrv.y]
+    legend: [mocap]
+    x_label: "$x [m]$"
+    y_label: "$y [m]$"
+
 
 # unit settings
 convert_units:
@@ -547,225 +213,225 @@ convert_units:
 # (3) type: cs        -> takes data and returns data of a cubic spline, or its derivative (needs derivative)
 # (4) type: bs        -> takes data and returns data of a b-spline, or its derivative (needs derivative, smoothing)
 # (5) type: custom    -> processes data to compute and return new custom data vectors (based on target string list)
-additional_data:
-  # ==================================================
-  # fitting: new time vector
-  # ==================================================
-  - source: timestamp
-    target: fitTimestamp
-    type: linspace
-    step: 0.0001
-  # ==================================================
-  # fitting with new length
-  # ==================================================
-  - source: stateEstimateZ.px
-    target: fitZ.px
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 0
-  - source: stateEstimateZ.py
-    target: fitZ.py
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 0
-  - source: stateEstimateZ.pz
-    target: fitZ.pz
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 0
-  - source: stateEstimateZ.px
-    target: fitZ.pvx
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 1
-  - source: stateEstimateZ.py
-    target: fitZ.pvy
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 1
-  - source: stateEstimateZ.pz
-    target: fitZ.pvz
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 1
-  - source: stateEstimateZ.px
-    target: fitZ.pax
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 2
-  - source: stateEstimateZ.py
-    target: fitZ.pay
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 2
-  - source: stateEstimateZ.pz
-    target: fitZ.paz
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 2
-  # ==================================================
-  # fitting with original length
-  # ==================================================
-  - source: ctrlLee.rpyx
-    target: fitZOriginalLength.rpyx
-    type: bs
-    smoothing: 10
-    # degree:
-    derivative: 0
-    original_length: True
-  - source: ctrlLee.rpyy
-    target: fitZOriginalLength.rpyy
-    type: bs
-    smoothing: 10
-    # degree:
-    derivative: 0
-    original_length: True
-  - source: ctrlLee.rpyz
-    target: fitZOriginalLength.rpyz
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 0
-    original_length: True
-  - source: ctrlLee.rpyx
-    target: fitZOriginalLength.omegax
-    type: bs
-    smoothing: 10
-    # degree:
-    derivative: 1
-    original_length: True
-  - source: ctrlLee.rpyy
-    target: fitZOriginalLength.omegay
-    type: bs
-    smoothing: 10
-    # degree:
-    derivative: 1
-    original_length: True
-  - source: ctrlLee.rpyz
-    target: fitZOriginalLength.omegaz
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 1
-    original_length: True
-  - source: ctrlLee.rpyx
-    target: fitZOriginalLength.alphax
-    type: bs
-    smoothing: 10
-    # degree:
-    derivative: 2
-    original_length: True
-  - source: ctrlLee.rpyy
-    target: fitZOriginalLength.alphay
-    type: bs
-    smoothing: 10
-    # degree:
-    derivative: 2
-    original_length: True
-  - source: ctrlLee.rpyz
-    target: fitZOriginalLength.alphaz
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 2
-    original_length: True
-  - source: stateEstimateZ.px
-    target: fitZOriginalLength.px
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 0
-    original_length: True
-  - source: stateEstimateZ.py
-    target: fitZOriginalLength.py
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 0
-    original_length: True
-  - source: stateEstimateZ.pz
-    target: fitZOriginalLength.pz
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 0
-    original_length: True
-  - source: stateEstimateZ.px
-    target: fitZOriginalLength.pvx
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 1
-    original_length: True
-  - source: stateEstimateZ.py
-    target: fitZOriginalLength.pvy
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 1
-    original_length: True
-  - source: stateEstimateZ.pz
-    target: fitZOriginalLength.pvz
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 1
-    original_length: True
-  - source: stateEstimateZ.px
-    target: fitZOriginalLength.pax
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 2
-    original_length: True
-  - source: stateEstimateZ.py
-    target: fitZOriginalLength.pay
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 2
-    original_length: True
-  - source: stateEstimateZ.pz
-    target: fitZOriginalLength.paz
-    type: bs
-    smoothing: 1
-    # degree:
-    derivative: 2
-    original_length: True
-  # ==================================================
-  # custom data with original length respectively
-  # ==================================================
-  - type: custom
-    target: 
-    - error.px
-    - error.py
-    - error.pz
-    - error.pvx
-    - error.pvy
-    - error.pvz
-    - error.cpx
-    - error.cpy
-    - error.cpz
-    - error.pwx
-    - error.pwy
-    - error.pwz
-    - error.rpyx
-    - error.rpyy
-    - error.rpyz
-    - error.wx
-    - error.wy
-    - error.wz
-    - residual.f
-    - residual.tx
-    - residual.ty
-    - residual.tz
-  # ==================================================
+# additional_data:
+#   # ==================================================
+#   # fitting: new time vector
+#   # ==================================================
+#   - source: timestamp
+#     target: fitTimestamp
+#     type: linspace
+#     step: 0.0001
+#   # ==================================================
+#   # fitting with new length
+#   # ==================================================
+#   - source: stateEstimateZ.px
+#     target: fitZ.px
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 0
+#   - source: stateEstimateZ.py
+#     target: fitZ.py
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 0
+#   - source: stateEstimateZ.pz
+#     target: fitZ.pz
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 0
+#   - source: stateEstimateZ.px
+#     target: fitZ.pvx
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 1
+#   - source: stateEstimateZ.py
+#     target: fitZ.pvy
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 1
+#   - source: stateEstimateZ.pz
+#     target: fitZ.pvz
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 1
+#   - source: stateEstimateZ.px
+#     target: fitZ.pax
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 2
+#   - source: stateEstimateZ.py
+#     target: fitZ.pay
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 2
+#   - source: stateEstimateZ.pz
+#     target: fitZ.paz
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 2
+#   # ==================================================
+#   # fitting with original length
+#   # ==================================================
+#   - source: ctrlLee.rpyx
+#     target: fitZOriginalLength.rpyx
+#     type: bs
+#     smoothing: 10
+#     # degree:
+#     derivative: 0
+#     original_length: True
+#   - source: ctrlLee.rpyy
+#     target: fitZOriginalLength.rpyy
+#     type: bs
+#     smoothing: 10
+#     # degree:
+#     derivative: 0
+#     original_length: True
+#   - source: ctrlLee.rpyz
+#     target: fitZOriginalLength.rpyz
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 0
+#     original_length: True
+#   - source: ctrlLee.rpyx
+#     target: fitZOriginalLength.omegax
+#     type: bs
+#     smoothing: 10
+#     # degree:
+#     derivative: 1
+#     original_length: True
+#   - source: ctrlLee.rpyy
+#     target: fitZOriginalLength.omegay
+#     type: bs
+#     smoothing: 10
+#     # degree:
+#     derivative: 1
+#     original_length: True
+#   - source: ctrlLee.rpyz
+#     target: fitZOriginalLength.omegaz
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 1
+#     original_length: True
+#   - source: ctrlLee.rpyx
+#     target: fitZOriginalLength.alphax
+#     type: bs
+#     smoothing: 10
+#     # degree:
+#     derivative: 2
+#     original_length: True
+#   - source: ctrlLee.rpyy
+#     target: fitZOriginalLength.alphay
+#     type: bs
+#     smoothing: 10
+#     # degree:
+#     derivative: 2
+#     original_length: True
+#   - source: ctrlLee.rpyz
+#     target: fitZOriginalLength.alphaz
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 2
+#     original_length: True
+#   - source: stateEstimateZ.px
+#     target: fitZOriginalLength.px
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 0
+#     original_length: True
+#   - source: stateEstimateZ.py
+#     target: fitZOriginalLength.py
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 0
+#     original_length: True
+#   - source: stateEstimateZ.pz
+#     target: fitZOriginalLength.pz
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 0
+#     original_length: True
+#   - source: stateEstimateZ.px
+#     target: fitZOriginalLength.pvx
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 1
+#     original_length: True
+#   - source: stateEstimateZ.py
+#     target: fitZOriginalLength.pvy
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 1
+#     original_length: True
+#   - source: stateEstimateZ.pz
+#     target: fitZOriginalLength.pvz
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 1
+#     original_length: True
+#   - source: stateEstimateZ.px
+#     target: fitZOriginalLength.pax
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 2
+#     original_length: True
+#   - source: stateEstimateZ.py
+#     target: fitZOriginalLength.pay
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 2
+#     original_length: True
+#   - source: stateEstimateZ.pz
+#     target: fitZOriginalLength.paz
+#     type: bs
+#     smoothing: 1
+#     # degree:
+#     derivative: 2
+#     original_length: True
+#   # ==================================================
+#   # custom data with original length respectively
+#   # ==================================================
+#   - type: custom
+#     target: 
+#     - error.px
+#     - error.py
+#     - error.pz
+#     - error.pvx
+#     - error.pvy
+#     - error.pvz
+#     - error.cpx
+#     - error.cpy
+#     - error.cpz
+#     - error.pwx
+#     - error.pwy
+#     - error.pwz
+#     - error.rpyx
+#     - error.rpyy
+#     - error.rpyz
+#     - error.wx
+#     - error.wy
+#     - error.wz
+#     - residual.f
+#     - residual.tx
+#     - residual.ty
+#     - residual.tz
+#   # ==================================================

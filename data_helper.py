@@ -5,10 +5,9 @@ Tool for manipulating and adding data to the automatically generated reports.
 import numpy as np
 from numpy.polynomial import polynomial as P
 from scipy.interpolate import CubicSpline, BSpline, splrep
-import matplotlib.pyplot as plt
 
 
-from model_payload import ResidualsPayload
+# from model_payload import ResidualsPayload
 
 
 class DataHelper:
@@ -85,58 +84,59 @@ class DataHelper:
     
     @staticmethod
     def generate_data_custom(data: dict[str, np.ndarray], target_list: list[str]) -> list[np.ndarray]:
+        pass
         # init objects for computing custom data (residuals, state errors, etc.)
-        res_payload = ResidualsPayload(data)
+        # res_payload = ResidualsPayload(data)
 
         # check and generate target for custom data
-        custom_data = []
-        for target in target_list:
-            if target == "error.px":
-                custom_data.append(res_payload.get_error_payload_position_x())
-            elif target == "error.py":
-                custom_data.append(res_payload.get_error_payload_position_y())
-            elif target == "error.pz":
-                custom_data.append(res_payload.get_error_payload_position_z())
-            elif target == "error.pvx":
-                custom_data.append(res_payload.get_error_payload_velocity_x())
-            elif target == "error.pvy":
-                custom_data.append(res_payload.get_error_payload_velocity_x())
-            elif target == "error.pvz":
-                custom_data.append(res_payload.get_error_payload_velocity_x())
-            elif target == "error.cpx":
-                custom_data.append(res_payload.get_error_cable_unit_vector_x())
-            elif target == "error.cpy":
-                custom_data.append(res_payload.get_error_cable_unit_vector_y())
-            elif target == "error.cpz":
-                custom_data.append(res_payload.get_error_cable_unit_vector_z())
-            elif target == "error.pwx":
-                custom_data.append(res_payload.get_error_payload_angular_velocity_x())
-            elif target == "error.pwy": 
-                custom_data.append(res_payload.get_error_payload_angular_velocity_y())
-            elif target == "error.pwz":
-                custom_data.append(res_payload.get_error_payload_angular_velocity_z())
-            elif target == "error.rpyx":
-                custom_data.append(res_payload.get_error_uav_orientation_x())
-            elif target == "error.rpyy":
-                custom_data.append(res_payload.get_error_uav_orientation_y())
-            elif target == "error.rpyz":
-                custom_data.append(res_payload.get_error_uav_orientation_z())
-            elif target == "error.wx":
-                custom_data.append(res_payload.get_error_uav_angular_velocity_x())
-            elif target == "error.wy":
-                custom_data.append(res_payload.get_error_uav_angular_velocity_y())
-            elif target == "error.wz":
-                custom_data.append(res_payload.get_error_uav_angular_velocity_z())
-            elif target == "residual.f":
-                custom_data.append(res_payload.get_residual_force())
-            elif target == "residual.tx":
-                custom_data.append(res_payload.get_residual_torque_x())
-            elif target == "residual.ty":
-                custom_data.append(res_payload.get_residual_torque_y())
-            elif target == "residual.tz":
-                custom_data.append(res_payload.get_residual_torque_z())
+        # custom_data = []
+        # for target in target_list:
+        #     if target == "error.px":
+        #         custom_data.append(res_payload.get_error_payload_position_x())
+        #     elif target == "error.py":
+        #         custom_data.append(res_payload.get_error_payload_position_y())
+        #     elif target == "error.pz":
+        #         custom_data.append(res_payload.get_error_payload_position_z())
+        #     elif target == "error.pvx":
+        #         custom_data.append(res_payload.get_error_payload_velocity_x())
+        #     elif target == "error.pvy":
+        #         custom_data.append(res_payload.get_error_payload_velocity_x())
+        #     elif target == "error.pvz":
+        #         custom_data.append(res_payload.get_error_payload_velocity_x())
+        #     elif target == "error.cpx":
+        #         custom_data.append(res_payload.get_error_cable_unit_vector_x())
+        #     elif target == "error.cpy":
+        #         custom_data.append(res_payload.get_error_cable_unit_vector_y())
+        #     elif target == "error.cpz":
+        #         custom_data.append(res_payload.get_error_cable_unit_vector_z())
+        #     elif target == "error.pwx":
+        #         custom_data.append(res_payload.get_error_payload_angular_velocity_x())
+        #     elif target == "error.pwy": 
+        #         custom_data.append(res_payload.get_error_payload_angular_velocity_y())
+        #     elif target == "error.pwz":
+        #         custom_data.append(res_payload.get_error_payload_angular_velocity_z())
+        #     elif target == "error.rpyx":
+        #         custom_data.append(res_payload.get_error_uav_orientation_x())
+        #     elif target == "error.rpyy":
+        #         custom_data.append(res_payload.get_error_uav_orientation_y())
+        #     elif target == "error.rpyz":
+        #         custom_data.append(res_payload.get_error_uav_orientation_z())
+        #     elif target == "error.wx":
+        #         custom_data.append(res_payload.get_error_uav_angular_velocity_x())
+        #     elif target == "error.wy":
+        #         custom_data.append(res_payload.get_error_uav_angular_velocity_y())
+        #     elif target == "error.wz":
+        #         custom_data.append(res_payload.get_error_uav_angular_velocity_z())
+        #     elif target == "residual.f":
+        #         custom_data.append(res_payload.get_residual_force())
+        #     elif target == "residual.tx":
+        #         custom_data.append(res_payload.get_residual_torque_x())
+        #     elif target == "residual.ty":
+        #         custom_data.append(res_payload.get_residual_torque_y())
+        #     elif target == "residual.tz":
+        #         custom_data.append(res_payload.get_residual_torque_z())
 
-        return custom_data
+        # return custom_data
     
     
 if __name__ == "__main__":
