@@ -83,7 +83,7 @@ def add_data(data, settings):
     print("...done adding data")
 
 
-def create_figures(data_usd, settings, log_str):
+def create_figures(data_usd, settings):
     debug_all = False
     debug = False
     debug_figure_number = 20 # Residual Torques
@@ -93,13 +93,13 @@ def create_figures(data_usd, settings, log_str):
     # debug_figure_number = 7 # payload velocities
 
 
-    log_path = os.path.join(settings["data_dir"], log_str)
+    log_path = os.path.join(settings["data_dir"], settings['data_file'])
     print("log file: {}".format(log_path))
 
     data_processed = process_data(data_usd, settings)
 
     # create a PDF to save the figures
-    pdf_path =  os.path.join(settings["output_dir"], log_str) + ".pdf"
+    pdf_path =  os.path.join(settings["output_dir"], settings['data_file']) + ".pdf"
     print("output path: {}".format(pdf_path))
 
     # check if user wants to overwrite the report file
@@ -113,14 +113,14 @@ def create_figures(data_usd, settings, log_str):
         title_text_settings += f"    {setting}: {settings[setting]}\n"
 
     # read the parameters from the info file
-    info_file = f"{settings['info_dir']}/{log_str.replace('log', 'info').split('_')[0]}.yaml" 
-    print("... reading info file: {}".format(info_file))
+    info_path = os.path.join(settings['info_dir'], settings["info_file"])
+    print("... reading info file: {}".format())
 
     try:
-        with open(info_file, "r") as f:
+        with open(info_path, "r") as f:
             info = yaml.safe_load(f)
     except FileNotFoundError:
-        print(f"File not found: {info_file}")
+        print(f"File not found: {info_path}")
         exit(1)
 
     title_text_parameters = f"Parameters:\n"
@@ -263,97 +263,12 @@ if __name__ == "__main__":
     with open(settings_file, 'r') as f:
         settings = yaml.load(f, Loader=yaml.FullLoader)
 
-    mode = "manual single"
-    # mode = "manual range"
-    # mode = "auto"
+    # decode binary log data
+    path = os.path.join(settings["data_dir"], settings['data_file'])
+    print(f"Processing {path}...")
+    data_usd = cfusdlog.decode(path)
 
-    if mode == "manual single":
-        # get the log number from the user
-        # log_num = input("Enter the logging number: ")
-        # TODO: enter the name so that log_str is the filename of the downloaded log
-        log_num = 182
-        print(f"Processing cf231_{log_num}")
-        log_str = f"cf231_{log_num}"
-
-        # decode binary log data
-        path = os.path.join(settings["data_dir"], log_str)
-        data_usd = cfusdlog.decode(path)
-
-        # create the figures
-        print("...creating figures")
-        create_figures(data_usd, settings, log_str)
-        print("...done creating figures")
-
-    # TODO: manual range not tested (problems with the name of the logging file may arise bc of suffix "_2" for example)
-    if mode == "manual range":
-        # get the log number from the user
-        log_num_first = input("Enter the first logging number: ")
-        log_num_last = input("Enter the last logging number: ")
-
-        for log_num in range(int(log_num_first), int(log_num_last) + 1):
-            log_str = f"log{log_num}"
-
-            # decode binary log data
-            path = os.path.join(settings["data_dir"], log_str)
-            data_usd = cfusdlog.decode(path)
-
-            # create the figures
-            print("...creating figures")
-            create_figures(data_usd, settings, log_str)
-            print("...done creating figures")
-
-    elif mode == "auto":
-        # automatically scan and process the logs
-        # (1) do a scan of the directories logs, info, and reports to see what logs have not been plotted yet
-        logs_dir = settings["data_dir"]
-        info_dir = settings["info_dir"]
-        reports_dir = settings["output_dir"]
-
-        processed_logs = []
-        for root, _, files in os.walk(reports_dir):
-            for filename in files:
-                if filename.startswith("log") and filename.endswith(".pdf"):
-                    # Extract the log number from the PDF filename
-                    log_str = filename.strip(".pdf")
-                    processed_logs.append(log_str)
-                    
-        non_processed_logs = []
-        for root, _, files in os.walk(logs_dir):
-            for filename in files:
-                if filename.startswith("log"):
-                    if filename not in processed_logs:
-                        non_processed_logs.append(filename)    
-
-        # (2) plot them all
-        if len(non_processed_logs) == 0:
-            print("No logs to process")
-            sys.exit(0)
-
-        print("====================================")
-        print("...logs to process:")
-        non_processed_logs.sort()
-        for log_str in non_processed_logs:
-            print(log_str)
-        print("====================================")
-        ans = input("Proceed? [y/n]: ")
-        if ans == "n":
-            print("Exiting...")
-            sys.exit(0)
-        print("...processing logs")
-        print("====================================")
-
-        count = 0
-        for log_str in non_processed_logs:
-            # decode binary log data
-            path = os.path.join(settings["data_dir"], log_str)
-            data_usd = cfusdlog.decode(path)
-
-            # create the figures
-            print("...creating figures")
-            create_figures(data_usd, settings, log_str)
-            print("...done creating figures")
-
-            count += 1
-
-        print("====================================")
-        print(f"Processed {count} logs")
+    # create the figures
+    print("...creating figures")
+    create_figures(data_usd, settings)
+    print("...done creating figures")

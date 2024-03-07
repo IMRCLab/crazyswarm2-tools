@@ -1,8 +1,10 @@
 ---
 # general settings
 data_dir: logs
+data_file: cf231_
 # data_file: log129
 info_dir: info
+info_file: info_cf231_.yaml
 event_name: 
 - fixedFrequency
 - estPosition
@@ -16,7 +18,11 @@ skip_data:
 # title settings
 title_settings:
 - data_dir
-# - data_file
+- data_file
+- info_dir
+- info_file
+- event_name
+- output_dir
 - start_time
 - end_time
 
