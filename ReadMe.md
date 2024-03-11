@@ -1,14 +1,14 @@
 # Crazyswarm2 Tools
 
-This repository is based on the branch ```tune-lee``` from [Crazyswarm2](https://github.com/IMRCLab/crazyswarm2/tree/tune-lee). It contains all the data that was accumulated during the tuning experiments of the Lee controller. The data is stored in the folder ```_logs```. In here, you will find the script ```plot.py``` for yaml-based automatic report generation to process the logs. The script ```data_helper.py``` focuses on manipulating and adding data to the automatically generated reports. In the following, you will find a guide on how to use the scripts and data.
+This repository is based on the branch ```tune-lee``` from [Crazyswarm2](https://github.com/IMRCLab/crazyswarm2/tree/tune-lee). It contains all the data that was accumulated during the tuning experiments of the Lee controller. The data is stored in the folder ```/logs```. The information of each experiment is stored in the folder ```/info```. In here, you will also find the script ```plot.py``` for yaml-based automatic report generation to process the logs and info files. The script ```data_helper.py``` focuses on manipulating and adding data to the automatically generated reports. In the following, you will find a guide on how to use the scripts and data.
 
 # I just want to plot the data of an experiment. What should I do?
 
 0. Create a virtual environment and install the requirements.
-1. Check if you have the folder ```_experiments/reports```. If not, create it.
-2. Execute the script ```plot.py``` in ```_experiments```. Currently, the script is in the mode ```manual single``` which is why it will ask you which log you want to plot. The current one I am using is ```182```. 
+1. Check if you have the folder ```/reports```. If not, create it.
+2. Execute the script ```plot.py```. Currently, the script is in the mode ```manual single``` which is why it will ask you which log you want to plot. The current one I am using is ```182```.  Note that there are different modes available. You can change the mode in the script ```plot.py```.
 3. Wait for all plots to be generated. This may take a while.
-4. Check the folder ```_experiments/reports``` for the report. It should have the name ```log182.pdf```.
+4. Check the folder ```/reports``` for the report. It should have the name ```log182.pdf```.
 5. If you wonder how to add additional data that is not included in the logs but computed on the basis of it, for example by fitting a cubic spline, check out the function ```add_data()``` in ```plot.py``` as well as the script ```data_helper.py```. The file ```settings.yaml``` defines the requirements for the computation of additional data. There, multiple methods to generate and add new data to the report from the logs are used. Also, the payload uav model can be found in the file ```model_payload.py```.
 
 # How can I reuse the data and code from the tuning experiments?
@@ -29,7 +29,7 @@ This repository is based on the branch ```tune-lee``` from [Crazyswarm2](https:/
 
 ## 2. code
 
-0. If not already there, create the three folders mentioned above in the directory ```_experiments```
+0. If not already there, create the three folders mentioned above in the main directory of this repository: ```logs```, ```info```, ```reports```
 
 1. Decide which experiment you want to do
     - Decide which timescale, trajectory, motors, propellers and parameters of the lee controller, and experiment number you want to use: ```crazyflie/config/crazyflies.yaml``` (field ```ctrlLeeInfo``` and ```ctrlLee```)
@@ -43,9 +43,9 @@ This repository is based on the branch ```tune-lee``` from [Crazyswarm2](https:/
 
 > Note: The logs and reports up until number 145 were done with the upgraded CF motors (2) and QProp propellers (2). The logs and reports from number 146 onwards were done with the standard motors (1) and propellers (1).
 
-2. Check that the sd card includes this config file which is specific to the plotting script later on: ```_experiments/config.txt```
+2. Check that the sd card includes this config file which is specific to the plotting script later on: ```config.txt```. You may have to adjust the file depending on your needs.
 
-3. Save your tuning parameters and experiment information in the folder ```_experiments/info``` by executing the following command in the terminal
+3. Save your tuning parameters and experiment information in the folder ```/info``` by executing the following command in the terminal
 
 ```bash
 cd _experiments
@@ -54,7 +54,7 @@ python save.py
 
 4. Run the experiment, the script ```crazyflie_examples/crazyflie_examples/lee.py``` will automatically read the parameters from the file ```crazyflie/config/crazyflies.yaml```
 
-5. Rename and transfer the logs from the sd card to this workstation into the folder ```_experiments/logs```. Be sure to name the logs correctly, see the first section for more information
+5. Rename and transfer the logs from the sd card to this workstation into the folder ```/logs```. Be sure to name the logs correctly, see the first section for more information
 
 6. Create the report, more information can be found in the next section
 
@@ -64,7 +64,7 @@ The report is generated by the Python script ```plot.py``` which uses the settin
 
 ## 1. settings.yaml
 
-- Be sure to have the folders ```/reports``` and ```/logs``` in the directory ```_experiments```
+- Be sure to have the folders ```/reports``` and ```/logs``` in this repository
 - Adjust the following general settings
     - ```event_name```
     - ```output_dir```
@@ -90,7 +90,7 @@ The report is generated by the Python script ```plot.py``` which uses the settin
 ## 2. plot.py
 
 ```bash
-cd _experiments
+cd crazyswarm2-tools
 python plot.py
 ```
 
