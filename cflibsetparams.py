@@ -21,17 +21,17 @@ def on_fully_connected(link_uri):
     # cf.param.set_value('ctrlLee.Kpos_Dz', 20.0)
 
     # 11.03.2024 
-    cf.param.set_value('ctrlLee.Kpos_Px', 5.0)
-    cf.param.set_value('ctrlLee.Kpos_Py', 5.0)
-    cf.param.set_value('ctrlLee.Kpos_Pz', 25.0)
+    cf.param.set_value('ctrlLee.Kpos_Px', 6.0)
+    cf.param.set_value('ctrlLee.Kpos_Py', 6.0)
+    cf.param.set_value('ctrlLee.Kpos_Pz', 10.0)
 
     cf.param.set_value('ctrlLee.Kpos_Ix', 1.0)
     cf.param.set_value('ctrlLee.Kpos_Iy', 1.0)
-    cf.param.set_value('ctrlLee.Kpos_Iz', 10.0)
+    cf.param.set_value('ctrlLee.Kpos_Iz', 1.0)
 
     cf.param.set_value('ctrlLee.Kpos_Dx', 3.0)
     cf.param.set_value('ctrlLee.Kpos_Dy', 3.0)
-    cf.param.set_value('ctrlLee.Kpos_Dz', 25.0)
+    cf.param.set_value('ctrlLee.Kpos_Dz', 20.0)
 
     cf.param.set_value('ctrlLee.KR_x', 0.004)
     cf.param.set_value('ctrlLee.KR_y', 0.004)
