@@ -1,6 +1,6 @@
-experiment: 206
-trajectory: translation_y.csv
-timescale: 1.0
+experiment: 201
+trajectory: figure8.csv
+timescale: 2.0
 motors: standard motors (CF)
 propellers: standard propellers (CF)
 Kpos_Px: 17.0
