@@ -33,17 +33,17 @@ def on_fully_connected(link_uri):
     cf.param.set_value('ctrlLee.Kpos_Dy', 3)
     cf.param.set_value('ctrlLee.Kpos_Dz', 25.0)
 
-    cf.param.set_value('ctrlLee.KR_x', 0.007)
-    cf.param.set_value('ctrlLee.KR_y', 0.007)
-    cf.param.set_value('ctrlLee.KR_z', 0.008)
+    cf.param.set_value('ctrlLee.KR_x', 0.004)
+    cf.param.set_value('ctrlLee.KR_y', 0.004)
+    cf.param.set_value('ctrlLee.KR_z', 0.004)
 
-    cf.param.set_value('ctrlLee.KI_x', 0.03)
-    cf.param.set_value('ctrlLee.KI_y', 0.03)
-    cf.param.set_value('ctrlLee.KI_z', 0.03)
+    cf.param.set_value('ctrlLee.KI_x', 0.003)
+    cf.param.set_value('ctrlLee.KI_y', 0.003)
+    cf.param.set_value('ctrlLee.KI_z', 0.003)
 
-    cf.param.set_value('ctrlLee.Kw_x', 0.00115)
-    cf.param.set_value('ctrlLee.Kw_y', 0.00115)
-    cf.param.set_value('ctrlLee.Kw_z', 0.002)
+    cf.param.set_value('ctrlLee.Kw_x', 0.001)
+    cf.param.set_value('ctrlLee.Kw_y', 0.001)
+    cf.param.set_value('ctrlLee.Kw_z', 0.001)
 
     cf.param.set_value('ctrlLee.mass', 0.032)
 
