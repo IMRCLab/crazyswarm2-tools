@@ -4,8 +4,8 @@ data_dir: logs
 # data_file: log129
 info_dir: info
 event_name: fixedFrequency
-start_time: 2   # s (w.r.t log start time)
-end_time: 15    # s (w.r.t log start time)
+start_time:    # s (w.r.t log start time)
+end_time:     # s (w.r.t log start time)
 output_dir: reports
 figures_max:
 skip_data:
