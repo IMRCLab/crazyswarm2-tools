@@ -4,8 +4,8 @@ data_dir: logs
 # data_file: log129
 info_dir: info
 event_name: fixedFrequency
-start_time: # s
-end_time: # s (not in use currently)
+start_time:    # s (w.r.t log start time)
+end_time:     # s (w.r.t log start time)
 output_dir: reports
 figures_max:
 skip_data:
@@ -77,17 +77,17 @@ figures:
   structure:
   - x_axis: [timestamp]
     y_axis: [acc.x]
-    legend: [ekf]
+    legend: [measured]
     x_label: "$t [s]$"
     y_label: "$\\ddot x [m/s^2]$"
   - x_axis: [timestamp]
     y_axis: [acc.y]
-    legend: [ekf]
+    legend: [measured]
     x_label: "$t [s]$"
     y_label: "$\\ddot y [m/s^2]$"
   - x_axis: [timestamp]
     y_axis: [acc.z]
-    legend: [ekf]
+    legend: [measured]
     x_label: "$t [s]$"
     y_label: "$\\ddot z [m/s^2]$"
 - title: UAV Angles (XYZ)
@@ -96,19 +96,19 @@ figures:
   marker_kwargs:
     linewidth: 0.5
   structure:
-  - x_axis: [timestamp, timestamp]
-    y_axis: [ctrlLee.rpyx, ctrlLee.rpydx]
-    legend: [actual, desired]
+  - x_axis: [timestamp, timestamp, timestamp]
+    y_axis: [fitZOriginalLength.rpyx, ctrlLee.rpyx, ctrlLee.rpydx]
+    legend: [fitted, ekf, desired]
     x_label: "$t [s]$"
     y_label: "$\\phi [°]$"
-  - x_axis: [timestamp, timestamp]
-    y_axis: [ctrlLee.rpyy, ctrlLee.rpydy]
-    legend: [actual, desired]
+  - x_axis: [timestamp, timestamp, timestamp]
+    y_axis: [fitZOriginalLength.rpyy, ctrlLee.rpyy, ctrlLee.rpydy]
+    legend: [fitted, ekf, desired]
     x_label: "$t [s]$"
     y_label: "$\\theta [°]$"
-  - x_axis: [timestamp, timestamp]
-    y_axis: [ctrlLee.rpyz, ctrlLee.rpydz]
-    legend: [actual, desired]
+  - x_axis: [timestamp, timestamp, timestamp]
+    y_axis: [fitZOriginalLength.rpyz, ctrlLee.rpyz, ctrlLee.rpydz]
+    legend: [fitted, ekf, desired]
     x_label: "$t [s]$"
     y_label: "$\\psi [°]$"
 - title: UAV Angular Velocities (XYZ)
@@ -117,21 +117,44 @@ figures:
   marker_kwargs:
     linewidth: 0.5
   structure:
-  - x_axis: [timestamp, timestamp]
-    y_axis: [ctrlLee.omegax, ctrlLee.omegarx]
-    legend: [actual, desired]
+  - x_axis: [timestamp, timestamp, timestamp]
+    y_axis: [fitZOriginalLength.omegax, ctrlLee.omegax, ctrlLee.omegarx]
+    legend: [fitted, ekf, desired]
     x_label: "$t [s]$"
     y_label: "$\\dot \\phi [°/s]$"
-  - x_axis: [timestamp, timestamp]
-    y_axis: [ctrlLee.omegay, ctrlLee.omegary]
-    legend: [actual, desired]
+  - x_axis: [timestamp, timestamp, timestamp]
+    y_axis: [fitZOriginalLength.omegay, ctrlLee.omegay, ctrlLee.omegary]
+    legend: [fitted, ekf, desired]
     x_label: "$t [s]$"
     y_label: "$\\dot \\theta [°/s]$"
-  - x_axis: [timestamp, timestamp]
-    y_axis: [ctrlLee.omegaz, ctrlLee.omegarz]
-    legend: [actual, desired]
+  - x_axis: [timestamp, timestamp, timestamp]
+    y_axis: [fitZOriginalLength.omegaz, ctrlLee.omegaz, ctrlLee.omegarz]
+    legend: [fitted, ekf, desired]
     x_label: "$t [s]$"
     y_label: "$\\dot \\psi [°/s]$"
+- title: UAV Angular Accelerations (XYZ)
+  type: 2d subplots
+  marker: line
+  marker_kwargs:
+    # marker: o
+    # ms: 0.7
+    linewidth: 0.5
+  structure:
+  - x_axis: [timestamp]
+    y_axis: [fitZOriginalLength.alphax]
+    legend: [fitted]
+    x_label: "$t [s]$"
+    y_label: "$\\ddot \\phi [°/s^2]$"
+  - x_axis: [timestamp]
+    y_axis: [fitZOriginalLength.alphay]
+    legend: [fitted]
+    x_label: "$t [s]$"
+    y_label: "$\\ddot \\theta [°/s^2]$"
+  - x_axis: [timestamp]
+    y_axis: [fitZOriginalLength.alphaz]
+    legend: [fitted]
+    x_label: "$t [s]$"
+    y_label: "$\\ddot \\psi [°/s^2]$"
 - title: Payload Positions
   type: 2d subplots
   marker: line
@@ -140,18 +163,18 @@ figures:
     # ms: 0.7
     linewidth: 0.5
   structure:
-  - x_axis: [fitTimestamp, timestamp]
-    y_axis: [fitZ.px, stateEstimateZ.px]
+  - x_axis: [timestamp, timestamp]
+    y_axis: [fitZOriginalLength.px, stateEstimateZ.px]
     legend: [fitted, ekf]
     x_label: "$t [s]$"
     y_label: "$x [m]$"
-  - x_axis: [fitTimestamp, timestamp]
-    y_axis: [fitZ.py, stateEstimateZ.py]
+  - x_axis: [timestamp, timestamp]
+    y_axis: [fitZOriginalLength.py, stateEstimateZ.py]
     legend: [fitted, ekf]
     x_label: "$t [s]$"
     y_label: "$y [m]$"
-  - x_axis: [fitTimestamp, timestamp]
-    y_axis: [fitZ.pz, stateEstimateZ.pz]
+  - x_axis: [timestamp, timestamp]
+    y_axis: [fitZOriginalLength.pz, stateEstimateZ.pz]
     legend: [fitted, ekf]
     x_label: "$t [s]$"
     y_label: "$z [m]$"
@@ -163,18 +186,18 @@ figures:
     # ms: 0.7
     linewidth: 0.5
   structure:
-  - x_axis: [fitTimestamp, timestamp]
-    y_axis: [fitZ.pvx, stateEstimateZ.pvx]
+  - x_axis: [timestamp, timestamp]
+    y_axis: [fitZOriginalLength.pvx, stateEstimateZ.pvx]
     legend: [fitted, ekf]
     x_label: "$t [s]$"
     y_label: "$\\dot x [m/s]$"
-  - x_axis: [fitTimestamp, timestamp]
-    y_axis: [fitZ.pvy, stateEstimateZ.pvy]
+  - x_axis: [timestamp, timestamp]
+    y_axis: [fitZOriginalLength.pvy, stateEstimateZ.pvy]
     legend: [fitted, ekf]
     x_label: "$t [s]$"
     y_label: "$\\dot y [m/s]$"
-  - x_axis: [fitTimestamp, timestamp]
-    y_axis: [fitZ.pvz, stateEstimateZ.pvz]
+  - x_axis: [timestamp, timestamp]
+    y_axis: [fitZOriginalLength.pvz, stateEstimateZ.pvz]
     legend: [fitted, ekf]
     x_label: "$t [s]$"
     y_label: "$\\dot z [m/s]$"
@@ -186,18 +209,18 @@ figures:
     # ms: 0.7
     linewidth: 0.5
   structure:
-  - x_axis: [fitTimestamp]
-    y_axis: [fitZ.pax]
+  - x_axis: [timestamp]
+    y_axis: [fitZOriginalLength.pax]
     legend: [fitted]
     x_label: "$t [s]$"
     y_label: "$\\ddot x [m/s^2]$"
-  - x_axis: [fitTimestamp]
-    y_axis: [fitZ.pay]
+  - x_axis: [timestamp]
+    y_axis: [fitZOriginalLength.pay]
     legend: [fitted]
     x_label: "$t [s]$"
     y_label: "$\\ddot y [m/s^2]$"
-  - x_axis: [fitTimestamp]
-    y_axis: [fitZ.paz]
+  - x_axis: [timestamp]
+    y_axis: [fitZOriginalLength.paz]
     legend: [fitted]
     x_label: "$t [s]$"
     y_label: "$\\ddot z [m/s^2]$"
@@ -233,7 +256,7 @@ figures:
     legend: [actual]
     x_label: "$t [s]$"
     y_label: "$\\tau_z [Nm]$"
-- title: Trajectory
+- title: 3D Trajectory
   type: 3d
   marker: line
   marker_kwargs:
@@ -250,7 +273,7 @@ figures:
     - ctrltargetZ.y
     - ctrltargetZ.z
     - desired
-- title: Trajectory
+- title: 2D Trajectory
   type: 2d subplots
   marker: line
   marker_kwargs:
@@ -395,6 +418,48 @@ figures:
     legend: [""]
     x_label: "$t [s]$"
     y_label: "$e_{\\dot \\psi} [°/s]$"
+- title: Residual Forces
+  type: 2d subplots
+  marker: line
+  marker_kwargs:
+    linewidth: 0.5
+  structure:
+  - x_axis: [timestamp]
+    y_axis: [residual.fx]
+    legend: [""]
+    x_label: "$t [s]$"
+    y_label: "$F_{a_x} [N]$"
+  - x_axis: [timestamp]
+    y_axis: [residual.fy]
+    legend: [""]
+    x_label: "$t [s]$"
+    y_label: "$F_{a_y} [N]$"
+  - x_axis: [timestamp]
+    y_axis: [residual.fz]
+    legend: [""]
+    x_label: "$t [s]$"
+    y_label: "$F_{a_z} [N]$"
+- title: Residual Torques (XYZ)
+  type: 2d subplots
+  marker: line
+  marker_kwargs:
+    linewidth: 0.5
+  structure:
+  - x_axis: [timestamp]
+    y_axis: [residual.tx]
+    legend: [""]
+    x_label: "$t [s]$"
+    y_label: "$\\tau_{a_x} [Nm]$"
+  - x_axis: [timestamp]
+    y_axis: [residual.ty]
+    legend: [""]
+    x_label: "$t [s]$"
+    y_label: "$\\tau_{a_y} [Nm]$"
+  - x_axis: [timestamp]
+    y_axis: [residual.tz]
+    legend: [""]
+    x_label: "$t [s]$"
+    y_label: "$\\tau_{a_z} [Nm]$"
 
 # unit settings
 convert_units:
@@ -493,10 +558,16 @@ convert_units:
 # (4) type: bs        -> takes data and returns data of a b-spline, or its derivative (needs derivative, smoothing)
 # (5) type: custom    -> processes data to compute and return new custom data vectors (based on target string list)
 additional_data:
+  # ==================================================
+  # fitting: new time vector
+  # ==================================================
   - source: timestamp
     target: fitTimestamp
     type: linspace
     step: 0.0001
+  # ==================================================
+  # fitting with new length
+  # ==================================================
   - source: stateEstimateZ.px
     target: fitZ.px
     type: bs
@@ -551,6 +622,72 @@ additional_data:
     smoothing: 1
     # degree:
     derivative: 2
+  # ==================================================
+  # fitting with original length
+  # ==================================================
+  - source: ctrlLee.rpyx
+    target: fitZOriginalLength.rpyx
+    type: bs
+    smoothing: 10
+    # degree:
+    derivative: 0
+    original_length: True
+  - source: ctrlLee.rpyy
+    target: fitZOriginalLength.rpyy
+    type: bs
+    smoothing: 10
+    # degree:
+    derivative: 0
+    original_length: True
+  - source: ctrlLee.rpyz
+    target: fitZOriginalLength.rpyz
+    type: bs
+    smoothing: 1
+    # degree:
+    derivative: 0
+    original_length: True
+  - source: ctrlLee.rpyx
+    target: fitZOriginalLength.omegax
+    type: bs
+    smoothing: 10
+    # degree:
+    derivative: 1
+    original_length: True
+  - source: ctrlLee.rpyy
+    target: fitZOriginalLength.omegay
+    type: bs
+    smoothing: 10
+    # degree:
+    derivative: 1
+    original_length: True
+  - source: ctrlLee.rpyz
+    target: fitZOriginalLength.omegaz
+    type: bs
+    smoothing: 1
+    # degree:
+    derivative: 1
+    original_length: True
+  - source: ctrlLee.rpyx
+    target: fitZOriginalLength.alphax
+    type: bs
+    smoothing: 10
+    # degree:
+    derivative: 2
+    original_length: True
+  - source: ctrlLee.rpyy
+    target: fitZOriginalLength.alphay
+    type: bs
+    smoothing: 10
+    # degree:
+    derivative: 2
+    original_length: True
+  - source: ctrlLee.rpyz
+    target: fitZOriginalLength.alphaz
+    type: bs
+    smoothing: 1
+    # degree:
+    derivative: 2
+    original_length: True
   - source: stateEstimateZ.px
     target: fitZOriginalLength.px
     type: bs
@@ -593,6 +730,30 @@ additional_data:
     # degree:
     derivative: 1
     original_length: True
+  - source: stateEstimateZ.px
+    target: fitZOriginalLength.pax
+    type: bs
+    smoothing: 1
+    # degree:
+    derivative: 2
+    original_length: True
+  - source: stateEstimateZ.py
+    target: fitZOriginalLength.pay
+    type: bs
+    smoothing: 1
+    # degree:
+    derivative: 2
+    original_length: True
+  - source: stateEstimateZ.pz
+    target: fitZOriginalLength.paz
+    type: bs
+    smoothing: 1
+    # degree:
+    derivative: 2
+    original_length: True
+  # ==================================================
+  # custom data with original length respectively
+  # ==================================================
   - type: custom
     target: 
     - error.px
@@ -613,3 +774,10 @@ additional_data:
     - error.wx
     - error.wy
     - error.wz
+    - residual.fx
+    - residual.fy
+    - residual.fz
+    - residual.tx
+    - residual.ty
+    - residual.tz
+  # ==================================================
